@@ -1,22 +1,32 @@
 package com.example.tmdbpeople.datasource.searchdatasource
 
+import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.paging.DataSource
 import androidx.paging.PageKeyedDataSource
-import com.example.tmdbpeople.models.responsemodels.PersonDetailsResponse
+import com.example.tmdbpeople.models.PersonModel
 import com.example.tmdbpeople.networkutils.LoadCallback
 
 //DataSource Factory used to create Person DataSource object and post it to LiveData
-class PersonSearchDataSourceFactory (var loadCallback: LoadCallback ,var query : String?) :
-    DataSource.Factory<Int?, PersonDetailsResponse?>() {
-    var personDataSource : PersonSearchDataSource? = null
-    val itemLiveDataSource =
-        MutableLiveData<PageKeyedDataSource<Int?, PersonDetailsResponse?>>()
+class PersonSearchDataSourceFactory (var query : String) : DataSource.Factory<Int?, PersonModel?>() {
 
-    override fun create(): DataSource<Int?, PersonDetailsResponse?> {
-        personDataSource = PersonSearchDataSource(loadCallback, query)
+    private val loadingLiveData : MutableLiveData<Int> = MutableLiveData()
+    private val errorLiveData : MutableLiveData<String> = MutableLiveData()
+    var personDataSource : PersonSearchDataSource? = null
+    val itemLiveDataSource = MutableLiveData<PageKeyedDataSource<Int?, PersonModel?>>()
+
+    override fun create(): DataSource<Int?, PersonModel?> {
+        personDataSource = PersonSearchDataSource(query, loadingLiveData,errorLiveData)
         itemLiveDataSource.postValue(personDataSource)
         return personDataSource as PersonSearchDataSource
+    }
+
+    fun getStateLiveData() : LiveData<Int>? {
+        return loadingLiveData
+    }
+
+    fun getErrorLiveData() : LiveData<String>? {
+        return errorLiveData
     }
 
     //Function to refresh data

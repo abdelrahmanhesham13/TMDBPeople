@@ -2,9 +2,9 @@ package com.example.tmdbpeople.repositories
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
-import com.example.tmdbpeople.models.responsemodels.PersonDetailsResponse
+import com.example.tmdbpeople.models.PersonImage
+import com.example.tmdbpeople.models.PersonModel
 import com.example.tmdbpeople.models.responsemodels.PersonImagesResponse
-import com.example.tmdbpeople.models.responsemodels.PopularPersonResponse
 import com.example.tmdbpeople.networkutils.Constants
 import com.example.tmdbpeople.networkutils.PersonsService
 import com.example.tmdbpeople.networkutils.RetrofitService.service
@@ -16,15 +16,15 @@ class PersonDetailsRepository private constructor() {
     private val mPersonsService: PersonsService = service
 
     //Function to call person details api and returns LiveData object to observe changes and get person details response
-    fun getPersonDetails(personId: Int): LiveData<PersonDetailsResponse?> {
-        val personDetails = MutableLiveData<PersonDetailsResponse?>()
+    fun getPersonDetails(personId: Int): LiveData<PersonModel?> {
+        val personDetails = MutableLiveData<PersonModel?>()
         mPersonsService.personDetails(
             personId,
             Constants.API_KEY_VALUE
-        ).enqueue(object : Callback<PersonDetailsResponse?> {
+        ).enqueue(object : Callback<PersonModel?> {
             override fun onResponse(
-                call: Call<PersonDetailsResponse?>,
-                response: Response<PersonDetailsResponse?>
+                call: Call<PersonModel?>,
+                response: Response<PersonModel?>
             ) {
                 if (response.isSuccessful) {
                     personDetails.value = response.body()
@@ -34,7 +34,7 @@ class PersonDetailsRepository private constructor() {
             }
 
             override fun onFailure(
-                call: Call<PersonDetailsResponse?>,
+                call: Call<PersonModel?>,
                 t: Throwable
             ) {
                 t.printStackTrace()
@@ -47,25 +47,17 @@ class PersonDetailsRepository private constructor() {
     //Function to call person images api and returns LiveData object to observe changes and get person images response
     fun getPersonImages(personId: Int): LiveData<PersonImagesResponse?> {
         val personImages = MutableLiveData<PersonImagesResponse?>()
-        mPersonsService.personImages(
-            personId,
-            Constants.API_KEY_VALUE
-        ).enqueue(object : Callback<PersonImagesResponse?> {
-            override fun onResponse(
-                call: Call<PersonImagesResponse?>,
-                response: Response<PersonImagesResponse?>
-            ) {
+        mPersonsService.personImages(personId, Constants.API_KEY_VALUE).enqueue(object : Callback<PersonImagesResponse?> {
+            override fun onResponse(call: Call<PersonImagesResponse?>, response: Response<PersonImagesResponse?>) {
                 if (response.isSuccessful) {
+                    (response.body()?.profiles as ArrayList<PersonImage>).add(0,PersonImage())
                     personImages.value = response.body()
                 } else {
                     personImages.value = null
                 }
             }
 
-            override fun onFailure(
-                call: Call<PersonImagesResponse?>,
-                t: Throwable
-            ) {
+            override fun onFailure(call: Call<PersonImagesResponse?>, t: Throwable) {
                 t.printStackTrace()
                 personImages.value = null
             }

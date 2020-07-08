@@ -2,6 +2,7 @@ package com.example.tmdbpeople.views.activities
 
 import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
@@ -23,32 +24,24 @@ import com.example.tmdbpeople.networkutils.LoadCallback
 import com.example.tmdbpeople.viewmodels.PopularPersonsViewModel
 import com.example.tmdbpeople.viewmodels.viewmodelfactory.CustomViewModelFactory
 import com.example.tmdbpeople.views.adapters.PersonAdapter
+import com.example.tmdbpeople.views.baseviews.BaseActivityWithViewModel
 import kotlinx.android.synthetic.main.activity_popular_persons.*
 
 
-class PopularPersonsActivity : AppCompatActivity() , LoadCallback , PersonAdapter.OnItemClicked {
+class PopularPersonsActivity : BaseActivityWithViewModel<PopularPersonsViewModel , ActivityPopularPersonsBinding>() , PersonAdapter.OnItemClicked {
 
-    private var mPopularPersonsViewModel: PopularPersonsViewModel? = null
-    private var mActivityBinding: ActivityPopularPersonsBinding? = null
-    lateinit var mPersonsAdapter: PersonAdapter
+    private lateinit var mPersonsAdapter: PersonAdapter
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        mActivityBinding = DataBindingUtil.setContentView(this, R.layout.activity_popular_persons)
-        val viewModelFactory = CustomViewModelFactory(this)
-        mPopularPersonsViewModel =  ViewModelProvider(this,viewModelFactory).get(PopularPersonsViewModel::class.java)
         setupViews()
         observeData()
     }
 
     private fun setupViews() {
         title = getString(R.string.popular_people)
-
         injectAdapter()
-
-
         mActivityBinding?.personsRecycler?.layoutManager = LinearLayoutManager(this)
-        mActivityBinding?.personsRecycler?.setHasFixedSize(true)
         mActivityBinding?.personsRecycler?.adapter = mPersonsAdapter
     }
 
@@ -62,7 +55,26 @@ class PopularPersonsActivity : AppCompatActivity() , LoadCallback , PersonAdapte
     }
 
     private fun observeData() {
-        mPopularPersonsViewModel?.personPagedList?.observe(this, Observer {
+        mActivityViewModel?.getErrorLiveData()?.observe(this, Observer {
+            progressBar.visibility = View.GONE
+            centerProgressBar.visibility = View.GONE
+            Toast.makeText(this,it,Toast.LENGTH_LONG).show()
+        })
+        mActivityViewModel?.getStateLiveData()?.observe(this, Observer {
+            when (it) {
+                Constants.SUCCESS_STATE -> {
+                    progressBar.visibility = View.GONE
+                    centerProgressBar.visibility = View.GONE
+                }
+                Constants.LOAD_MORE_STATE -> {
+                    progressBar.visibility = View.VISIBLE
+                }
+                Constants.FIRST_LOAD_STATE -> {
+                    centerProgressBar.visibility = View.VISIBLE
+                }
+            }
+        })
+        mActivityViewModel?.personPagedList?.observe(this, Observer {
             mPersonsAdapter.submitList(it)
         })
     }
@@ -74,47 +86,30 @@ class PopularPersonsActivity : AppCompatActivity() , LoadCallback , PersonAdapte
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         if (item.itemId == R.id.search) {
-            startActivity(Intent(this,
-                SearchPersonsActivity::class.java))
+            startActivity(Intent(this, SearchPersonsActivity::class.java))
             return true
         } else if (item.itemId == R.id.refresh) {
             mActivityBinding?.centerProgressBar?.visibility = View.VISIBLE
-            mPopularPersonsViewModel?.invalidate()
+            mActivityViewModel?.invalidate()
             return true
         }
         return false
     }
 
-    override fun onError(message: String) {
-        runOnUiThread(Runnable {
-            progressBar.visibility = View.GONE
-            centerProgressBar.visibility = View.GONE
-        })
-        Toast.makeText(this,message,Toast.LENGTH_LONG).show()
-    }
-
-    override fun onSuccess() {
-        runOnUiThread(Runnable {
-            progressBar.visibility = View.GONE
-            centerProgressBar.visibility = View.GONE
-        })
-    }
-
-    override fun onLoadMore() {
-        runOnUiThread(Runnable {
-            progressBar.visibility = View.VISIBLE
-        })
-    }
-
-    override fun onFirstLoad() {
-        runOnUiThread(Runnable {
-            centerProgressBar.visibility = View.VISIBLE
-        })
-    }
-
     override fun onItemClicked(id: Int?) {
-        startActivity(Intent(this,PersonDetailsActivity::class.java)
-            .putExtra(Constants.PERSON_ID_PATH,id))
+        startActivity(Intent(this,PersonDetailsActivity::class.java).putExtra(Constants.PERSON_ID_PATH,id))
+    }
+
+    override fun getLayoutResourceId(): Int {
+       return R.layout.activity_popular_persons
+    }
+
+    override fun initialiseViewModel(): PopularPersonsViewModel {
+        return ViewModelProvider(this).get(PopularPersonsViewModel::class.java)
+    }
+
+    override fun enableBackButton(): Boolean {
+        return false
     }
 
 }

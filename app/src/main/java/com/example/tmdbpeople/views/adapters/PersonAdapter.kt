@@ -10,21 +10,20 @@ import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView.ViewHolder
 import com.example.tmdbpeople.R
 import com.example.tmdbpeople.databinding.PersonItemBinding
-import com.example.tmdbpeople.models.responsemodels.PersonDetailsResponse
+import com.example.tmdbpeople.models.PersonModel
 import com.example.tmdbpeople.networkutils.Constants
 import com.example.tmdbpeople.views.adapters.PersonAdapter.PersonViewHolder
 import com.squareup.picasso.Picasso
 import javax.inject.Inject
 
 
-class PersonAdapter() :
-    PagedListAdapter<PersonDetailsResponse, PersonViewHolder>(DIFF_CALLBACK) {
+class PersonAdapter() : PagedListAdapter<PersonModel, PersonViewHolder>(DIFF_CALLBACK) {
 
-    private lateinit var mCtx : Context
-    lateinit var onItemClicked : OnItemClicked
+    private lateinit var mCtx: Context
+    lateinit var onItemClicked: OnItemClicked
 
     @Inject
-    constructor (mCtx: Context, onItemClicked : OnItemClicked) : this() {
+    constructor (mCtx: Context, onItemClicked: OnItemClicked) : this() {
         this.mCtx = mCtx
         this.onItemClicked = onItemClicked
     }
@@ -42,19 +41,17 @@ class PersonAdapter() :
     override fun onBindViewHolder(holder: PersonViewHolder, position: Int) {
         val person = getItem(position)
         holder.personItemBinding.person = person
-        if (person != null) {
-            Picasso.get()
-                .load(Constants.IMAGE_BASE_URL_500W + person.profilePath)
-                .placeholder(R.drawable.im_placeholder)
-                .error(R.drawable.im_placeholder)
-                .into(holder.personItemBinding.personImage)
-        }
+        Picasso.get().load(person?.getImageFullPath())
+            .placeholder(R.drawable.im_placeholder)
+            .error(R.drawable.im_placeholder)
+            .into(holder.personItemBinding.personImage)
+
     }
 
     inner class PersonViewHolder(var personItemBinding: PersonItemBinding) :
-        ViewHolder(personItemBinding.root) , View.OnClickListener {
+        ViewHolder(personItemBinding.root), View.OnClickListener {
         init {
-           personItemBinding.root.setOnClickListener(this)
+            personItemBinding.root.setOnClickListener(this)
         }
 
         override fun onClick(v: View?) {
@@ -63,26 +60,20 @@ class PersonAdapter() :
     }
 
     companion object {
-        private val DIFF_CALLBACK: DiffUtil.ItemCallback<PersonDetailsResponse> =
-            object : DiffUtil.ItemCallback<PersonDetailsResponse>() {
-                override fun areItemsTheSame(
-                    oldItem: PersonDetailsResponse,
-                    newItem: PersonDetailsResponse
-                ): Boolean {
+        private val DIFF_CALLBACK: DiffUtil.ItemCallback<PersonModel> =
+            object : DiffUtil.ItemCallback<PersonModel>() {
+                override fun areItemsTheSame(oldItem: PersonModel, newItem: PersonModel): Boolean {
                     return oldItem.id == newItem.id
                 }
 
-                override fun areContentsTheSame(
-                    oldItem: PersonDetailsResponse,
-                    newItem: PersonDetailsResponse
-                ): Boolean {
+                override fun areContentsTheSame(oldItem: PersonModel, newItem: PersonModel): Boolean {
                     return oldItem == newItem
                 }
             }
     }
 
     interface OnItemClicked {
-        fun onItemClicked(id : Int?)
+        fun onItemClicked(id: Int?)
     }
 
 }

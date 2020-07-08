@@ -22,42 +22,56 @@ import com.example.tmdbpeople.networkutils.LoadCallback
 import com.example.tmdbpeople.viewmodels.SearchPersonsViewModel
 import com.example.tmdbpeople.viewmodels.viewmodelfactory.CustomViewModelFactory
 import com.example.tmdbpeople.views.adapters.PersonAdapter
+import com.example.tmdbpeople.views.baseviews.BaseActivityWithViewModel
 import kotlinx.android.synthetic.main.activity_popular_persons.*
 
-class SearchPersonsActivity : RootActivity() , LoadCallback , PersonAdapter.OnItemClicked {
+class SearchPersonsActivity : BaseActivityWithViewModel<SearchPersonsViewModel , ActivitySearchBinding>() , PersonAdapter.OnItemClicked {
 
-    private var mSearchPersonsViewModel: SearchPersonsViewModel? = null
-    var mActivityBinding : ActivitySearchBinding? = null
-    var mPersonsAdapter : PersonAdapter? = null
+    lateinit var mPersonsAdapter : PersonAdapter
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        mActivityBinding = DataBindingUtil.setContentView(this,R.layout.activity_search)
-        val customViewModelFactory = CustomViewModelFactory(this)
-        mSearchPersonsViewModel = ViewModelProvider(this,customViewModelFactory).get(SearchPersonsViewModel::class.java)
         setupViews()
         observeData()
     }
 
     private fun observeData() {
-        mSearchPersonsViewModel?.personPagedList?.observe(this, Observer {
-            mPersonsAdapter?.submitList(it)
+        mActivityViewModel?.getErrorLiveData()?.observe(this, Observer {
+            progressBar.visibility = View.GONE
+            centerProgressBar.visibility = View.GONE
+            Toast.makeText(this,it, Toast.LENGTH_LONG).show()
         })
+        mActivityViewModel?.getStateLiveData()?.observe(this, Observer {
+            when (it) {
+                Constants.SUCCESS_STATE -> {
+                    progressBar.visibility = View.GONE
+                    centerProgressBar.visibility = View.GONE
+                }
+                Constants.LOAD_MORE_STATE -> {
+                    progressBar.visibility = View.VISIBLE
+                }
+                Constants.FIRST_LOAD_STATE -> {
+                    centerProgressBar.visibility = View.VISIBLE
+                }
+            }
+        })
+
+        mActivityViewModel?.personPagedList?.observe(this, Observer {
+            mPersonsAdapter.submitList(it)
+        })
+
     }
 
     private fun setupViews() {
         title = getString(R.string.search_for_person)
         injectAdapter()
         mActivityBinding?.searchResultsRecycler?.layoutManager = LinearLayoutManager(this)
-        mActivityBinding?.searchResultsRecycler?.setHasFixedSize(true)
         mActivityBinding?.searchResultsRecycler?.adapter = mPersonsAdapter
 
         mActivityBinding?.searchEditText?.addTextChangedListener(object : TextWatcher {
             override fun afterTextChanged(s: Editable?) {
-                if (!s?.isEmpty()!!) {
-                    mSearchPersonsViewModel?.doSearch(s.toString())
-                } else {
-                    mPersonsAdapter?.submitList(null)
+                if (s!!.isNotEmpty()) {
+                    mActivityViewModel?.doSearch(s.toString())
                 }
             }
 
@@ -79,37 +93,20 @@ class SearchPersonsActivity : RootActivity() , LoadCallback , PersonAdapter.OnIt
         mPersonsAdapter = personAdapterComponent.getPersonAdapter()
     }
 
-
-    override fun onError(message: String) {
-        runOnUiThread(Runnable {
-            progressBar.visibility = View.GONE
-            centerProgressBar.visibility = View.GONE
-        })
-        Toast.makeText(this,message, Toast.LENGTH_LONG).show()
-    }
-
-    override fun onSuccess() {
-        runOnUiThread(Runnable {
-            progressBar.visibility = View.GONE
-            centerProgressBar.visibility = View.GONE
-        })
-    }
-
-    override fun onLoadMore() {
-        runOnUiThread(Runnable {
-            progressBar.visibility = View.VISIBLE
-        })
-    }
-
-    override fun onFirstLoad() {
-        runOnUiThread(Runnable {
-            centerProgressBar.visibility = View.VISIBLE
-        })
-    }
-
     override fun onItemClicked(id: Int?) {
-        startActivity(
-            Intent(this,PersonDetailsActivity::class.java)
+        startActivity(Intent(this,PersonDetailsActivity::class.java)
                 .putExtra(Constants.PERSON_ID_PATH,id))
+    }
+
+    override fun getLayoutResourceId(): Int {
+        return R.layout.activity_search
+    }
+
+    override fun initialiseViewModel(): SearchPersonsViewModel {
+        return ViewModelProvider(this).get(SearchPersonsViewModel::class.java)
+    }
+
+    override fun enableBackButton(): Boolean {
+        return true
     }
 }

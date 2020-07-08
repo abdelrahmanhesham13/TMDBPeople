@@ -5,7 +5,7 @@
     <data>
         <variable
             name="person"
-            type="com.example.tmdbpeople.models.responsemodels.PersonDetailsResponse" />
+            type="com.example.tmdbpeople.models.PersonModel" />
     </data>
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
@@ -54,6 +54,7 @@
 
         <TextView
             android:id="@+id/person_gender"
+            android:text="@{person.genderStringResId}"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="16dp"

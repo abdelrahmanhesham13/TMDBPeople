@@ -1,5 +1,6 @@
 package com.example.tmdbpeople.models
 
+import com.example.tmdbpeople.networkutils.Constants
 import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
 
@@ -25,5 +26,9 @@ class PersonImage {
     @SerializedName("aspect_ratio")
     @Expose
     var aspectRatio: Double? = null
+
+    fun getImageFullPath() : String {
+        return Constants.IMAGE_BASE_URL_500W + filePath
+    }
 
 }

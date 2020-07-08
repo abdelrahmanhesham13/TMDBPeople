@@ -4,7 +4,7 @@
     <data>
         <variable
             name="person"
-            type="com.example.tmdbpeople.models.responsemodels.PersonDetailsResponse" />
+            type="com.example.tmdbpeople.models.PersonModel" />
     </data>
 
     <androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"

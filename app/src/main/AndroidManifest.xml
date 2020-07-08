@@ -16,7 +16,6 @@
         <activity android:name=".views.activities.ImageViewerActivity"/>
         <activity android:name=".views.activities.PersonDetailsActivity" />
         <activity android:name=".views.activities.SearchPersonsActivity" />
-        <activity android:name=".views.activities.RootActivity"/>
         <activity
             android:name=".views.activities.PopularPersonsActivity"
             android:configChanges="keyboardHidden|orientation">

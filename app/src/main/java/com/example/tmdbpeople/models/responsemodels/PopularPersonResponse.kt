@@ -1,5 +1,6 @@
 package com.example.tmdbpeople.models.responsemodels
 
+import com.example.tmdbpeople.models.PersonModel
 import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
 
@@ -15,5 +16,5 @@ class PopularPersonResponse {
     var totalPages: Int? = null
     @SerializedName("results")
     @Expose
-    var persons: List<PersonDetailsResponse>? = null
+    var people: List<PersonModel>? = null
 }

@@ -11,7 +11,7 @@ import com.example.tmdbpeople.R
 import com.example.tmdbpeople.databinding.PersonDetailsItemBinding
 import com.example.tmdbpeople.databinding.PersonImageItemBinding
 import com.example.tmdbpeople.models.PersonImage
-import com.example.tmdbpeople.models.responsemodels.PersonDetailsResponse
+import com.example.tmdbpeople.models.PersonModel
 import com.example.tmdbpeople.networkutils.Constants
 import com.squareup.picasso.Picasso
 import javax.inject.Inject
@@ -21,26 +21,20 @@ class PersonDetailsAdapter() : RecyclerView.Adapter<ViewHolder>() {
 
     private lateinit var context: Context
     private lateinit var personImages : ArrayList<PersonImage>
-    private var personDetailsResponse: PersonDetailsResponse? = null
+    private var personModel: PersonModel? = null
     private lateinit var onItemClicked: OnItemClicked
 
     @Inject
-    constructor(context: Context , personImages : ArrayList<PersonImage> , personDetailsResponse: PersonDetailsResponse?
-                ,onItemClicked: OnItemClicked) : this() {
+    constructor(context: Context, personImages : ArrayList<PersonImage>, personModel: PersonModel?, onItemClicked: OnItemClicked) : this() {
         this.context = context
         this.personImages = personImages
-        this.personDetailsResponse = personDetailsResponse
+        this.personModel = personModel
         this.onItemClicked = onItemClicked
     }
 
-    //Add dummy person to arrayList to put details view in the zero position in recycler
-    fun setPersonDetailsResponse(personDetailsResponse: PersonDetailsResponse?) {
-        this.personDetailsResponse = personDetailsResponse
-        if (personImages.size > 0) {
-            personImages[0] = PersonImage()
-        } else {
-            personImages.add(PersonImage())
-        }
+    //Add person details cell
+    fun setPersonDetailsResponse(personModel: PersonModel?) {
+        this.personModel = personModel
         notifyItemChanged(0)
     }
 
@@ -58,45 +52,26 @@ class PersonDetailsAdapter() : RecyclerView.Adapter<ViewHolder>() {
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
-        if (viewType == DETAILS_VIEW_TYPE) {
-            val personDetailsItemBinding =
-                DataBindingUtil.inflate<PersonDetailsItemBinding>(
-                    LayoutInflater.from(parent.context),
-                    R.layout.person_details_item,
-                    parent,
-                    false
-                )
-            return PersonDetailsViewHolder(personDetailsItemBinding)
+        return if (viewType == DETAILS_VIEW_TYPE) {
+            val personDetailsItemBinding = DataBindingUtil.inflate<PersonDetailsItemBinding>(LayoutInflater.from(parent.context), R.layout.person_details_item, parent, false)
+            PersonDetailsViewHolder(personDetailsItemBinding)
         } else {
-            val personImageItemBinding =
-                DataBindingUtil.inflate<PersonImageItemBinding>(
-                    LayoutInflater.from(parent.context),
-                    R.layout.person_image_item,
-                    parent,
-                    false
-                )
-            return PersonImageViewHolder(personImageItemBinding)
+            val personImageItemBinding = DataBindingUtil.inflate<PersonImageItemBinding>(LayoutInflater.from(parent.context), R.layout.person_image_item, parent, false)
+            PersonImageViewHolder(personImageItemBinding)
         }
     }
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         if (getItemViewType(position) == DETAILS_VIEW_TYPE) {
             val detailsViewHolder = holder as PersonDetailsViewHolder
-            detailsViewHolder.binding.person = personDetailsResponse
-            if (personDetailsResponse?.gender == 1) {
-                detailsViewHolder.binding.personGender.setText(R.string.female)
-            } else {
-                detailsViewHolder.binding.personGender.setText(R.string.male)
-            }
-            Picasso.get()
-                .load(Constants.IMAGE_BASE_URL_500W + personDetailsResponse?.profilePath)
+            detailsViewHolder.binding.person = personModel
+            Picasso.get().load(personModel?.getImageFullPath())
                 .placeholder(R.drawable.im_placeholder)
                 .error(R.drawable.im_placeholder)
-                .into(holder.binding.personImage)
+                .into(detailsViewHolder.binding.personImage)
         } else {
             val imageViewHolder = holder as PersonImageViewHolder
-            Picasso.get()
-                .load(Constants.IMAGE_BASE_URL_500W + personImages.get(position).filePath)
+            Picasso.get().load(personImages[position].getImageFullPath())
                 .placeholder(R.drawable.im_placeholder)
                 .error(R.drawable.im_placeholder)
                 .into(imageViewHolder.binding.personImage)
