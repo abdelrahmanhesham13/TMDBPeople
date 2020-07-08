@@ -10,4 +10,9 @@ interface PersonsService {
     @GET(Constants.POPULAR_PATH)
     fun listPopularPersons(@Query(Constants.API_KEYWORD) apiKey : String,
                            @Query(Constants.PAGE_KEY) page : Int) : Call<PopularPersonResponse>
+
+    @GET(Constants.SEARCH_PATH)
+    fun listPopularPersonsForSearch(@Query(Constants.API_KEYWORD) apiKey : String,
+                                    @Query(Constants.PAGE_KEY) page : Int,
+                                    @Query(Constants.QUERY_KEY) query : String?) : Call<PopularPersonResponse>
 }
