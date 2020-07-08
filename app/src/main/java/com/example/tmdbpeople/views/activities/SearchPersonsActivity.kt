@@ -21,7 +21,7 @@ import com.example.tmdbpeople.viewmodels.viewmodelfactory.CustomViewModelFactory
 import com.example.tmdbpeople.views.adapters.PersonAdapter
 import kotlinx.android.synthetic.main.activity_main.*
 
-class SearchPersonsActivity : AppCompatActivity() , LoadCallback , PersonAdapter.OnItemClicked {
+class SearchPersonsActivity : RootActivity() , LoadCallback , PersonAdapter.OnItemClicked {
 
     private var mSearchPersonsViewModel: SearchPersonsViewModel? = null
     var mActivityBinding : ActivitySearchBinding? = null
@@ -30,8 +30,6 @@ class SearchPersonsActivity : AppCompatActivity() , LoadCallback , PersonAdapter
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         mActivityBinding = DataBindingUtil.setContentView(this,R.layout.activity_search)
-        supportActionBar?.setDisplayHomeAsUpEnabled(true)
-        supportActionBar?.setHomeButtonEnabled(true)
         val customViewModelFactory = CustomViewModelFactory(this)
         mSearchPersonsViewModel = ViewModelProviders.of(this,customViewModelFactory).get(SearchPersonsViewModel::class.java)
         setupViews()
@@ -95,14 +93,6 @@ class SearchPersonsActivity : AppCompatActivity() , LoadCallback , PersonAdapter
         runOnUiThread(Runnable {
             centerProgressBar.visibility = View.VISIBLE
         })
-    }
-
-    override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        if (item.itemId == android.R.id.home) {
-            finish()
-            return true
-        }
-        return false
     }
 
     override fun onItemClicked(id: Int?) {

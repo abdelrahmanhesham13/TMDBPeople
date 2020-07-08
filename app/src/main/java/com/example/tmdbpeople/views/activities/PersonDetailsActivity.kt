@@ -1,5 +1,6 @@
 package com.example.tmdbpeople.views.activities
 
+import android.content.Intent
 import android.os.Bundle
 import android.view.MenuItem
 import android.view.View
@@ -21,7 +22,7 @@ import com.example.tmdbpeople.views.adapters.PersonAdapter
 import com.example.tmdbpeople.views.adapters.PersonDetailsAdapter
 
 
-class PersonDetailsActivity : AppCompatActivity() , PersonAdapter.OnItemClicked {
+class PersonDetailsActivity : RootActivity() , PersonDetailsAdapter.OnItemClicked {
 
     private lateinit var mPersonDetailsAdapter: PersonDetailsAdapter
     private var mActivityBinding : ActivityPersonDetailsBinding? = null
@@ -30,8 +31,6 @@ class PersonDetailsActivity : AppCompatActivity() , PersonAdapter.OnItemClicked 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         mActivityBinding = DataBindingUtil.setContentView(this, R.layout.activity_person_details)
-        supportActionBar?.setDisplayHomeAsUpEnabled(true)
-        supportActionBar?.setHomeButtonEnabled(true)
         val viewModelFactory = CustomViewModelFactory(intent.getIntExtra(Constants.PERSON_ID_PATH , 0))
         mPersonDetailsViewModel =
             ViewModelProviders.of(this,viewModelFactory).get(PersonDetailsViewModel::class.java)
@@ -73,15 +72,9 @@ class PersonDetailsActivity : AppCompatActivity() , PersonAdapter.OnItemClicked 
         mActivityBinding?.detailsRecycler?.adapter = mPersonDetailsAdapter
     }
 
-    override fun onItemClicked(id: Int?) {
 
-    }
-
-    override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        if (item.itemId == android.R.id.home) {
-            finish()
-            return true
-        }
-        return false
+    override fun onItemClicked(image: String?) {
+        startActivity(Intent(this,ImageViewerActivity::class.java)
+            .putExtra(Constants.IMAGE_KEY,image))
     }
 }

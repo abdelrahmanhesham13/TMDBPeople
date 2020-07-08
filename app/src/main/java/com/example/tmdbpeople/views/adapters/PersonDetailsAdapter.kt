@@ -2,6 +2,7 @@ package com.example.tmdbpeople.views.adapters
 
 import android.content.Context
 import android.view.LayoutInflater
+import android.view.View
 import android.view.ViewGroup
 import androidx.databinding.DataBindingUtil
 import androidx.recyclerview.widget.RecyclerView
@@ -12,7 +13,6 @@ import com.example.tmdbpeople.databinding.PersonImageItemBinding
 import com.example.tmdbpeople.models.PersonImage
 import com.example.tmdbpeople.models.responsemodels.PersonDetailsResponse
 import com.example.tmdbpeople.networkutils.Constants
-import com.example.tmdbpeople.views.adapters.PersonAdapter.OnItemClicked
 import com.squareup.picasso.Picasso
 
 
@@ -21,17 +21,13 @@ class PersonDetailsAdapter(private val context: Context,private var personImages
     private val onItemClicked: OnItemClicked) : RecyclerView.Adapter<ViewHolder>() {
     fun setPersonDetailsResponse(personDetailsResponse: PersonDetailsResponse?) {
         this.personDetailsResponse = personDetailsResponse
-        if (personImages.size > 0) {
-            personImages[0] = PersonImage()
-        } else {
-            personImages.add(PersonImage())
-        }
+        personImages.add(0, PersonImage())
         notifyItemChanged(0)
     }
 
     fun addImages(images : ArrayList<PersonImage>) {
         personImages.addAll(images)
-        notifyDataSetChanged()
+        notifyItemRangeInserted(1,images.size)
     }
 
     override fun getItemViewType(position: Int): Int {
@@ -94,18 +90,27 @@ class PersonDetailsAdapter(private val context: Context,private var personImages
 
     inner class PersonDetailsViewHolder(var binding: PersonDetailsItemBinding) : ViewHolder(binding.root)
 
-    inner class PersonImageViewHolder(var binding: PersonImageItemBinding) : ViewHolder(binding.root) {
+    inner class PersonImageViewHolder(var binding: PersonImageItemBinding) : ViewHolder(binding.root) ,View.OnClickListener{
         init {
             val metrics = context.resources.displayMetrics
             val width = metrics.widthPixels
             val height = metrics.heightPixels
             binding.root.layoutParams.width = (width / 2) - 10
+            binding.root.setOnClickListener(this)
+        }
+
+        override fun onClick(v: View?) {
+            onItemClicked.onItemClicked(personImages.get(adapterPosition).filePath)
         }
     }
 
     companion object {
         const val DETAILS_VIEW_TYPE = 1
         const val IMAGE_VIEW_TYPE = 2
+    }
+
+    interface OnItemClicked {
+        fun onItemClicked(image : String?)
     }
 
 }
