@@ -18,7 +18,7 @@ class SearchPersonsViewModel(application: Application) : AndroidViewModel(applic
 
     var personPagedList: LiveData<PagedList<PersonModel?>> = MutableLiveData()
     private var liveDataSource = MutableLiveData<PageKeyedDataSource<Int?, PersonModel?>>()
-    private var personDataSource: PersonSearchDataSourceFactory = PersonSearchDataSourceFactory(Constants.EMPTY_STRING)
+    private var personDataSource: PersonSearchDataSourceFactory = PersonSearchDataSourceFactory(application,Constants.EMPTY_STRING)
 
     init {
         liveDataSource = personDataSource.itemLiveDataSource
@@ -35,6 +35,13 @@ class SearchPersonsViewModel(application: Application) : AndroidViewModel(applic
 
     fun getErrorLiveData() : LiveData<String>? {
         return personDataSource.getErrorLiveData()
+    }
+
+    override fun onCleared() {
+        super.onCleared()
+        personDataSource.compositeDisposable?.dispose()
+        personDataSource.compositeDisposable?.clear()
+        personDataSource.compositeDisposable = null
     }
 
     fun doSearch(query: String) {

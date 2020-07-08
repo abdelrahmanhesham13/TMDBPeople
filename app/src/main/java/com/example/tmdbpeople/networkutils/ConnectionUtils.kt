@@ -1,5 +1,8 @@
 package com.example.tmdbpeople.networkutils
 
+import android.content.Context
+import android.net.ConnectivityManager
+import androidx.core.content.ContextCompat.getSystemService
 import java.io.IOException
 import java.net.HttpURLConnection
 import java.net.URL
@@ -7,20 +10,11 @@ import java.net.URL
 
 class ConnectionUtils {
     companion object {
-        fun isOnline(): Boolean {
-            return try {
-                val urlc: HttpURLConnection =
-                    URL("https://www.google.com").openConnection() as HttpURLConnection
-                urlc.setRequestProperty("User-Agent", "Test")
-                urlc.setRequestProperty("Connection", "close")
-                urlc.setConnectTimeout(10000)
-                urlc.connect()
-                urlc.getResponseCode() === 200
-            } catch (e: IOException) {
-                e.printStackTrace()
-                false
-            }
-        }
+        fun isOnline(context: Context): Boolean {
+            val cm = context.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager?
 
+            return cm!!.activeNetworkInfo != null && cm.activeNetworkInfo.isConnected
+
+        }
     }
 }

@@ -14,7 +14,7 @@ import com.example.tmdbpeople.networkutils.LoadCallback
 
 //PopularPersonsViewModel create DataSource Factory for Person List Pagination and create LiveData object to observe on it
 class PopularPersonsViewModel(application: Application) : AndroidViewModel(application) {
-    private var personDataSourceFactory : PersonDataSourceFactory = PersonDataSourceFactory()
+    private var personDataSourceFactory : PersonDataSourceFactory = PersonDataSourceFactory(application)
     val personPagedList: LiveData<PagedList<PersonModel?>>
     private val liveDataSource: LiveData<PageKeyedDataSource<Int?, PersonModel?>>
 
@@ -36,5 +36,12 @@ class PopularPersonsViewModel(application: Application) : AndroidViewModel(appli
 
     fun invalidate() {
         personDataSourceFactory.invalidate()
+    }
+
+    override fun onCleared() {
+        super.onCleared()
+        personDataSourceFactory.compositeDisposable?.dispose()
+        personDataSourceFactory.compositeDisposable?.clear()
+        personDataSourceFactory.compositeDisposable = null
     }
 }

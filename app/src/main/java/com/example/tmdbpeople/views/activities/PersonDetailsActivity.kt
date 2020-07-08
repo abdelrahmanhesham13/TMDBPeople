@@ -3,6 +3,7 @@ package com.example.tmdbpeople.views.activities
 import android.content.Intent
 import android.os.Bundle
 import android.view.View
+import android.widget.Toast
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.GridLayoutManager
@@ -21,6 +22,7 @@ import com.example.tmdbpeople.viewmodels.viewmodelfactory.CustomViewModelFactory
 import com.example.tmdbpeople.views.viewutils.SpacesItemDecoration
 import com.example.tmdbpeople.views.adapters.PersonDetailsAdapter
 import com.example.tmdbpeople.views.baseviews.BaseActivityWithViewModel
+import kotlinx.android.synthetic.main.activity_popular_persons.*
 import javax.inject.Inject
 
 
@@ -33,7 +35,6 @@ class PersonDetailsActivity : BaseActivityWithViewModel<PersonDetailsViewModel, 
         super.onCreate(savedInstanceState)
         setupViews()
         observeDetails()
-        observeImages()
     }
 
     private fun observeImages() {
@@ -43,10 +44,24 @@ class PersonDetailsActivity : BaseActivityWithViewModel<PersonDetailsViewModel, 
     }
 
     private fun observeDetails() {
-        mActivityViewModel?.personDetailsLiveData?.observe(this,
-            Observer<PersonModel?> { personModel ->
+        mActivityViewModel?.errorStateLiveData?.observe(this , Observer {
+            progressBar.visibility = View.GONE
+            Toast.makeText(this,it, Toast.LENGTH_LONG).show()
+        })
+        mActivityViewModel?.loadStateLiveData?.observe(this , Observer {
+            when (it) {
+                Constants.SUCCESS_STATE -> {
+                    progressBar.visibility = View.GONE
+                }
+                Constants.FIRST_LOAD_STATE -> {
+                    progressBar.visibility = View.VISIBLE
+                }
+            }
+        })
+        mActivityViewModel?.personDetailsLiveData?.observe(this, Observer { personModel ->
                 mActivityBinding?.progressBar?.visibility = View.GONE
                 mPersonDetailsAdapter.setPersonDetailsResponse(personModel)
+                observeImages()
             })
     }
 
@@ -90,7 +105,7 @@ class PersonDetailsActivity : BaseActivityWithViewModel<PersonDetailsViewModel, 
     }
 
     override fun initialiseViewModel(): PersonDetailsViewModel {
-        val viewModelFactory = CustomViewModelFactory(intent.getIntExtra(Constants.PERSON_ID_PATH , Constants.PERSON_ID_PATH_DEFAULT_VALUE))
+        val viewModelFactory = CustomViewModelFactory(intent.getIntExtra(Constants.PERSON_ID_PATH , Constants.PERSON_ID_PATH_DEFAULT_VALUE),this)
         return ViewModelProvider(this,viewModelFactory).get(PersonDetailsViewModel::class.java)
     }
 
