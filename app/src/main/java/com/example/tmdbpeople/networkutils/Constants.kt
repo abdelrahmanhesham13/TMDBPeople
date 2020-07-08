@@ -6,6 +6,7 @@ object Constants {
     const val POPULAR_PATH = "person/popular"
     const val SEARCH_PATH = "search/person"
     const val DETAILS_PATH = "person/{person_id}"
+    const val IMAGES_PATH = "person/{person_id}/images"
     const val API_KEYWORD = "api_key"
     const val PAGE_KEY = "page"
     const val QUERY_KEY = "query"

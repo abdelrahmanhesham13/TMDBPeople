@@ -1,6 +1,7 @@
 package com.example.tmdbpeople.networkutils
 
 import com.example.tmdbpeople.models.responsemodels.PersonDetailsResponse
+import com.example.tmdbpeople.models.responsemodels.PersonImagesResponse
 import com.example.tmdbpeople.models.responsemodels.PopularPersonResponse
 import retrofit2.Call
 import retrofit2.http.GET
@@ -21,4 +22,9 @@ interface PersonsService {
     @GET(Constants.DETAILS_PATH)
     fun personDetails(@Path(Constants.PERSON_ID_PATH) personId : Int,
                       @Query(Constants.API_KEYWORD) apiKey : String) : Call<PersonDetailsResponse>
+
+
+    @GET(Constants.IMAGES_PATH)
+    fun personImages(@Path(Constants.PERSON_ID_PATH) personId : Int,
+                      @Query(Constants.API_KEYWORD) apiKey : String) : Call<PersonImagesResponse>
 }

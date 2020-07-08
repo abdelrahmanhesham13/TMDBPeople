@@ -3,6 +3,7 @@ package com.example.tmdbpeople.repositories
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.example.tmdbpeople.models.responsemodels.PersonDetailsResponse
+import com.example.tmdbpeople.models.responsemodels.PersonImagesResponse
 import com.example.tmdbpeople.models.responsemodels.PopularPersonResponse
 import com.example.tmdbpeople.networkutils.Constants
 import com.example.tmdbpeople.networkutils.PersonsService
@@ -15,7 +16,7 @@ class PersonDetailsRepository private constructor() {
     private val mPersonsService: PersonsService = service
     
     fun getPersonDetails(personId: Int): LiveData<PersonDetailsResponse?> {
-        val popularPersons = MutableLiveData<PersonDetailsResponse?>()
+        val personDetails = MutableLiveData<PersonDetailsResponse?>()
         mPersonsService.personDetails(
             personId,
             Constants.API_KEY_VALUE
@@ -25,9 +26,9 @@ class PersonDetailsRepository private constructor() {
                 response: Response<PersonDetailsResponse?>
             ) {
                 if (response.isSuccessful) {
-                    popularPersons.setValue(response.body())
+                    personDetails.setValue(response.body())
                 } else {
-                    popularPersons.setValue(null)
+                    personDetails.setValue(null)
                 }
             }
 
@@ -36,10 +37,38 @@ class PersonDetailsRepository private constructor() {
                 t: Throwable
             ) {
                 t.printStackTrace()
-                popularPersons.value = null
+                personDetails.value = null
             }
         })
-        return popularPersons
+        return personDetails
+    }
+
+    fun getPersonImages(personId: Int): LiveData<PersonImagesResponse?> {
+        val personImages = MutableLiveData<PersonImagesResponse?>()
+        mPersonsService.personImages(
+            personId,
+            Constants.API_KEY_VALUE
+        ).enqueue(object : Callback<PersonImagesResponse?> {
+            override fun onResponse(
+                call: Call<PersonImagesResponse?>,
+                response: Response<PersonImagesResponse?>
+            ) {
+                if (response.isSuccessful) {
+                    personImages.setValue(response.body())
+                } else {
+                    personImages.setValue(null)
+                }
+            }
+
+            override fun onFailure(
+                call: Call<PersonImagesResponse?>,
+                t: Throwable
+            ) {
+                t.printStackTrace()
+                personImages.value = null
+            }
+        })
+        return personImages
     }
 
     companion object {
