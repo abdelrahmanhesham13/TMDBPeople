@@ -14,7 +14,7 @@ import com.example.tmdbpeople.databinding.ActivityMainBinding
 import com.example.tmdbpeople.viewmodels.PopularPersonsViewModel
 import com.example.tmdbpeople.views.adapters.PersonAdapter
 
-class MainActivity : AppCompatActivity() {
+class MainActivity : AppCompatActivity(), PersonAdapter.OnItemClicked {
 
     var mPopularPersonsViewModel: PopularPersonsViewModel? = null
     var mActivityBinding: ActivityMainBinding? = null
@@ -30,7 +30,7 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun setupViews() {
-        mPersonsAdapter = PersonAdapter(this)
+        mPersonsAdapter = PersonAdapter(this,this)
         mActivityBinding?.personsRecycler?.layoutManager = LinearLayoutManager(this)
         mActivityBinding?.personsRecycler?.setHasFixedSize(true)
         mActivityBinding?.personsRecycler?.adapter = mPersonsAdapter
@@ -55,6 +55,10 @@ class MainActivity : AppCompatActivity() {
             return true
         }
         return false
+    }
+
+    override fun onItemClicked(id: Int?) {
+        TODO("Not yet implemented")
     }
 
 }

@@ -2,6 +2,7 @@ package com.example.tmdbpeople.views.adapters
 
 import android.content.Context
 import android.view.LayoutInflater
+import android.view.View
 import android.view.ViewGroup
 import androidx.databinding.DataBindingUtil
 import androidx.paging.PagedListAdapter
@@ -14,7 +15,7 @@ import com.example.tmdbpeople.networkutils.Constants
 import com.example.tmdbpeople.views.adapters.PersonAdapter.PersonViewHolder
 import com.squareup.picasso.Picasso
 
-class PersonAdapter(private val mCtx: Context) :
+class PersonAdapter(private val mCtx: Context , private val onItemClicked : OnItemClicked) :
     PagedListAdapter<PersonModel, PersonViewHolder>(DIFF_CALLBACK) {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): PersonViewHolder {
@@ -29,8 +30,8 @@ class PersonAdapter(private val mCtx: Context) :
 
     override fun onBindViewHolder(holder: PersonViewHolder, position: Int) {
         val person = getItem(position)
+        holder.personItemBinding.person = person
         if (person != null) {
-            holder.personItemBinding.personName.text = person.name
             Picasso.get()
                 .load(Constants.IMAGE_BASE_URL_500W + person.profilePath)
                 .placeholder(R.drawable.im_placeholder)
@@ -40,7 +41,15 @@ class PersonAdapter(private val mCtx: Context) :
     }
 
     inner class PersonViewHolder(var personItemBinding: PersonItemBinding) :
-        ViewHolder(personItemBinding.root)
+        ViewHolder(personItemBinding.root) , View.OnClickListener {
+        init {
+           personItemBinding.root.setOnClickListener(this)
+        }
+
+        override fun onClick(v: View?) {
+            onItemClicked.onItemClicked(getItem(adapterPosition)?.id)
+        }
+    }
 
     companion object {
         private val DIFF_CALLBACK: DiffUtil.ItemCallback<PersonModel> =
@@ -59,6 +68,10 @@ class PersonAdapter(private val mCtx: Context) :
                     return oldItem == newItem
                 }
             }
+    }
+
+    interface OnItemClicked {
+        fun onItemClicked(id : Int?)
     }
 
 }

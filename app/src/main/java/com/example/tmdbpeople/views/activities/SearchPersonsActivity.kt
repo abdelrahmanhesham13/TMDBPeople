@@ -1,10 +1,10 @@
-package com.example.tmdbpeople.views
+package com.example.tmdbpeople.views.activities
 
+import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
-import android.util.Log
 import android.view.MenuItem
 import android.view.View
 import android.widget.Toast
@@ -14,14 +14,14 @@ import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.tmdbpeople.R
 import com.example.tmdbpeople.databinding.ActivitySearchBinding
+import com.example.tmdbpeople.networkutils.Constants
 import com.example.tmdbpeople.networkutils.LoadCallback
-import com.example.tmdbpeople.viewmodels.PopularPersonsViewModel
 import com.example.tmdbpeople.viewmodels.SearchPersonsViewModel
 import com.example.tmdbpeople.viewmodels.viewmodelfactory.CustomViewModelFactory
 import com.example.tmdbpeople.views.adapters.PersonAdapter
 import kotlinx.android.synthetic.main.activity_main.*
 
-class SearchPersonsActivity : AppCompatActivity() , LoadCallback, PersonAdapter.OnItemClicked {
+class SearchPersonsActivity : AppCompatActivity() , LoadCallback , PersonAdapter.OnItemClicked {
 
     private var mSearchPersonsViewModel: SearchPersonsViewModel? = null
     var mActivityBinding : ActivitySearchBinding? = null
@@ -45,7 +45,7 @@ class SearchPersonsActivity : AppCompatActivity() , LoadCallback, PersonAdapter.
     }
 
     private fun setupViews() {
-        setTitle("Search for Person")
+        title = "Search for Person"
         mPersonsAdapter = PersonAdapter(this,this)
         mActivityBinding?.searchResultsRecycler?.layoutManager = LinearLayoutManager(this)
         mActivityBinding?.searchResultsRecycler?.setHasFixedSize(true)
@@ -106,6 +106,8 @@ class SearchPersonsActivity : AppCompatActivity() , LoadCallback, PersonAdapter.
     }
 
     override fun onItemClicked(id: Int?) {
-        TODO("Not yet implemented")
+        startActivity(
+            Intent(this,PersonDetailsActivity::class.java)
+                .putExtra(Constants.PERSON_ID_PATH,id))
     }
 }

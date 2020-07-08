@@ -1,28 +1,30 @@
-package com.example.tmdbpeople.datasource.searchdatasource
+package com.example.tmdbpeople.datasource.populardatasource
 
 import androidx.lifecycle.MutableLiveData
 import androidx.paging.DataSource
 import androidx.paging.PageKeyedDataSource
+import com.example.tmdbpeople.datasource.populardatasource.PersonDataSource
 import com.example.tmdbpeople.models.PersonModel
 import com.example.tmdbpeople.networkutils.LoadCallback
 
-class PersonSearchDataSourceFactory (var loadCallback: LoadCallback ,var query : String?) :
+class PersonDataSourceFactory(private val loadCallback: LoadCallback, private val query : String?) :
     DataSource.Factory<Int?, PersonModel?>() {
-    var personDataSource : PersonSearchDataSource? = null
+    var personDataSource : PersonDataSource? = null
     val itemLiveDataSource =
         MutableLiveData<PageKeyedDataSource<Int?, PersonModel?>>()
 
     override fun create(): DataSource<Int?, PersonModel?> {
-        personDataSource = PersonSearchDataSource(loadCallback,query)
+        personDataSource =
+            PersonDataSource(
+                loadCallback
+            )
         itemLiveDataSource.postValue(personDataSource)
-        return personDataSource as PersonSearchDataSource
+        return personDataSource as PersonDataSource
     }
 
 
     fun invalidate() {
         personDataSource?.invalidate()
     }
-
-
 
 }

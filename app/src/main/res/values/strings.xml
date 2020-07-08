@@ -4,4 +4,6 @@
     <string name="search">Search</string>
     <string name="type_person_name">Type person name</string>
     <string name="refresh">Refresh</string>
+    <string name="female">Female</string>
+    <string name="male">Male</string>
 </resources>

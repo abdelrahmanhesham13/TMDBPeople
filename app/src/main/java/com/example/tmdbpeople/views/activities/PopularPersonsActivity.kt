@@ -1,4 +1,4 @@
-package com.example.tmdbpeople.views
+package com.example.tmdbpeople.views.activities
 
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
@@ -13,13 +13,61 @@ import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.tmdbpeople.R
 import com.example.tmdbpeople.databinding.ActivityMainBinding
+import com.example.tmdbpeople.models.PersonModel
+import com.example.tmdbpeople.networkutils.Constants
 import com.example.tmdbpeople.networkutils.LoadCallback
 import com.example.tmdbpeople.viewmodels.PopularPersonsViewModel
 import com.example.tmdbpeople.viewmodels.viewmodelfactory.CustomViewModelFactory
 import com.example.tmdbpeople.views.adapters.PersonAdapter
 import kotlinx.android.synthetic.main.activity_main.*
 
-class PopularPersonsActivity : AppCompatActivity() , LoadCallback, PersonAdapter.OnItemClicked {
+class PopularPersonsActivity : AppCompatActivity() , LoadCallback , PersonAdapter.OnItemClicked {
+
+    private var mPopularPersonsViewModel: PopularPersonsViewModel? = null
+    private var mActivityBinding: ActivityMainBinding? = null
+    var mPersonsAdapter: PersonAdapter? = null
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        mActivityBinding = DataBindingUtil.setContentView(this, R.layout.activity_main)
+        val viewModelFactory = CustomViewModelFactory(this)
+        mPopularPersonsViewModel =
+            ViewModelProviders.of(this,viewModelFactory).get(PopularPersonsViewModel::class.java)
+        setupViews()
+        observeData()
+    }
+
+    private fun setupViews() {
+        title = "Popular People"
+        mPersonsAdapter = PersonAdapter(this,this)
+        mActivityBinding?.personsRecycler?.layoutManager = LinearLayoutManager(this)
+        mActivityBinding?.personsRecycler?.setHasFixedSize(true)
+        mActivityBinding?.personsRecycler?.adapter = mPersonsAdapter
+    }
+
+    private fun observeData() {
+        mPopularPersonsViewModel?.personPagedList?.observe(this, Observer {
+            mPersonsAdapter?.submitList(it)
+        })
+    }
+
+    override fun onCreateOptionsMenu(menu: Menu?): Boolean {
+        menuInflater.inflate(R.menu.menu_main_activity,menu)
+        return true
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        if (item.itemId == R.id.search) {
+            startActivity(Intent(this,
+                SearchPersonsActivity::class.java))
+            return true
+        } else if (item.itemId == R.id.refresh) {
+            mPopularPersonsViewModel?.invalidate()
+            return true
+        }
+        return false
+    }
+
     override fun onError(message: String) {
         runOnUiThread(Runnable {
             progressBar.visibility = View.GONE
@@ -47,54 +95,9 @@ class PopularPersonsActivity : AppCompatActivity() , LoadCallback, PersonAdapter
         })
     }
 
-
-
-    private var mPopularPersonsViewModel: PopularPersonsViewModel? = null
-    var mActivityBinding: ActivityMainBinding? = null
-    var mPersonsAdapter: PersonAdapter? = null
-
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        mActivityBinding = DataBindingUtil.setContentView(this, R.layout.activity_main)
-        val viewModelFactory = CustomViewModelFactory(this)
-        mPopularPersonsViewModel =
-            ViewModelProviders.of(this,viewModelFactory).get(PopularPersonsViewModel::class.java)
-        setupViews()
-        observeData()
-    }
-
-    private fun setupViews() {
-        setTitle("Popular People")
-        mPersonsAdapter = PersonAdapter(this,this)
-        mActivityBinding?.personsRecycler?.layoutManager = LinearLayoutManager(this)
-        mActivityBinding?.personsRecycler?.setHasFixedSize(true)
-        mActivityBinding?.personsRecycler?.adapter = mPersonsAdapter
-    }
-
-    private fun observeData() {
-        mPopularPersonsViewModel?.personPagedList?.observe(this, Observer {
-            mPersonsAdapter?.submitList(it)
-        })
-    }
-
-    override fun onCreateOptionsMenu(menu: Menu?): Boolean {
-        menuInflater.inflate(R.menu.menu_main_activity,menu)
-        return true
-    }
-
-    override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        if (item.itemId == R.id.search) {
-            startActivity(Intent(this,SearchPersonsActivity::class.java))
-            return true
-        } else if (item.itemId == R.id.refresh) {
-            mPopularPersonsViewModel?.invalidate()
-            return true
-        }
-        return false
-    }
-
     override fun onItemClicked(id: Int?) {
-        TODO("Not yet implemented")
+        startActivity(Intent(this,PersonDetailsActivity::class.java)
+            .putExtra(Constants.PERSON_ID_PATH,id))
     }
 
 }
