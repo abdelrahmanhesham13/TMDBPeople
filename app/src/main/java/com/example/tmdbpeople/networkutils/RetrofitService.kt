@@ -3,6 +3,7 @@ package com.example.tmdbpeople.networkutils
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 
+//Retrofit Service Singleton Class
 object RetrofitService {
     private var retrofit: Retrofit? = null
     private val client: Retrofit?

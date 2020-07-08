@@ -7,4 +7,9 @@
     <string name="female">Female</string>
     <string name="male">Male</string>
     <string name="download">Download</string>
+    <string name="image_downloaded">Image Downloaded</string>
+    <string name="failed_image_downloaded">Failed to Download Image</string>
+    <string name="person_details">Person Details</string>
+    <string name="popular_people">Popular People</string>
+    <string name="search_for_person">Search for Person</string>
 </resources>

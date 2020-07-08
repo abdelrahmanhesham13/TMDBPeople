@@ -1,7 +1,7 @@
 package com.example.tmdbpeople.datasource.populardatasource
 
 import androidx.paging.PageKeyedDataSource
-import com.example.tmdbpeople.models.PersonModel
+import com.example.tmdbpeople.models.responsemodels.PersonDetailsResponse
 import com.example.tmdbpeople.models.responsemodels.PopularPersonResponse
 import com.example.tmdbpeople.networkutils.Constants
 import com.example.tmdbpeople.networkutils.RetrofitService.service
@@ -9,31 +9,31 @@ import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 
-class PersonDataSource(private val loadCallback: com.example.tmdbpeople.networkutils.LoadCallback) : PageKeyedDataSource<Int?, PersonModel?>() {
-    override fun loadInitial(params: LoadInitialParams<Int?>, callback: LoadInitialCallback<Int?, PersonModel?>) {
+//DataSource class for popular persons pagination
+class PersonDataSource(private val loadCallback: com.example.tmdbpeople.networkutils.LoadCallback) :
+    PageKeyedDataSource<Int?, PersonDetailsResponse?>() {
+
+    //Function Loads the data for first time (page number 1)
+    override fun loadInitial(
+        params: LoadInitialParams<Int?>,
+        callback: LoadInitialCallback<Int?, PersonDetailsResponse?>
+    ) {
         loadCallback.onFirstLoad()
-        service.listPopularPersons(
-            Constants.API_KEY_VALUE,
-            FIRST_PAGE
-        )
+        service.listPopularPersons(Constants.API_KEY_VALUE, Constants.FIRST_PAGE)
             .enqueue(object : Callback<PopularPersonResponse?> {
                 override fun onResponse(
                     call: Call<PopularPersonResponse?>,
                     response: Response<PopularPersonResponse?>
                 ) {
-                    if (response.body() != null) {
-                        if (response.body()!!.persons != null) {
-                            callback.onResult(
-                                response.body()!!.persons!!,
-                                null,
-                                FIRST_PAGE + 1
-                            )
-                            loadCallback.onSuccess()
-                        } else {
-                            loadCallback.onError("Server Error")
-                        }
+                    if (response.body()?.persons != null) {
+                        callback.onResult(
+                            response.body()?.persons!!,
+                            null,
+                            Constants.FIRST_PAGE + 1
+                        )
+                        loadCallback.onSuccess()
                     } else {
-                        loadCallback.onError("Server Error")
+                        loadCallback.onError(Constants.SERVER_ERROR_MESSAGE)
                     }
                 }
 
@@ -41,12 +41,13 @@ class PersonDataSource(private val loadCallback: com.example.tmdbpeople.networku
                     call: Call<PopularPersonResponse?>,
                     t: Throwable
                 ) {
-                    loadCallback.onError("Network Error")
+                    loadCallback.onError(Constants.NETWORK_ERROR_MESSAGE)
                 }
             })
     }
 
-    override fun loadBefore(params: LoadParams<Int?>, callback: LoadCallback<Int?, PersonModel?>) {
+    //Function to load previous data before current page number
+    override fun loadBefore(params: LoadParams<Int?>, callback: LoadCallback<Int?, PersonDetailsResponse?>) {
         service.listPopularPersons(
             Constants.API_KEY_VALUE,
             params.key
@@ -57,12 +58,10 @@ class PersonDataSource(private val loadCallback: com.example.tmdbpeople.networku
                     response: Response<PopularPersonResponse?>
                 ) {
                     val adjacentKey = if (params.key > 1) params.key - 1 else null
-                    if (response.body() != null) {
-                        if (response.body()!!.persons != null) callback.onResult(
-                            response.body()!!.persons!!,
+                        if (response.body()?.persons != null) callback.onResult(
+                            response.body()?.persons!!,
                             adjacentKey
                         )
-                    }
                 }
 
                 override fun onFailure(
@@ -73,7 +72,9 @@ class PersonDataSource(private val loadCallback: com.example.tmdbpeople.networku
             })
     }
 
-    override fun loadAfter(params: LoadParams<Int?>, callback: LoadCallback<Int?, PersonModel?>) {
+    //function to load more data when user scroll to bottom and check the page number to be lower than total pages
+    //to increase it
+    override fun loadAfter(params: LoadParams<Int?>, callback: LoadCallback<Int?, PersonDetailsResponse?>) {
         loadCallback.onLoadMore()
         service.listPopularPersons(
             Constants.API_KEY_VALUE,
@@ -84,25 +85,20 @@ class PersonDataSource(private val loadCallback: com.example.tmdbpeople.networku
                     call: Call<PopularPersonResponse?>,
                     response: Response<PopularPersonResponse?>
                 ) {
-                    if (response.body() != null) {
+                    if (response.body()?.totalPages != null) {
                         val key =
-                            if (response.body()!!.totalPages!! > params.key) params.key + 1 else null
-                        callback.onResult(response.body()!!.persons!!, key)
+                            if (response.body()?.totalPages!! > params.key) params.key + 1 else null
+                        callback.onResult(response.body()?.persons!!, key)
                         loadCallback.onSuccess()
                     } else {
-                        loadCallback.onError("Server Error")
+                        loadCallback.onError(Constants.SERVER_ERROR_MESSAGE)
                     }
                 }
 
                 override fun onFailure(call: Call<PopularPersonResponse?>, t: Throwable) {
                     t.printStackTrace()
-                    loadCallback.onError("Network Error")
+                    loadCallback.onError(Constants.NETWORK_ERROR_MESSAGE)
                 }
             })
-    }
-
-    companion object {
-        const val PAGE_SIZE = 20
-        private const val FIRST_PAGE = 1
     }
 }

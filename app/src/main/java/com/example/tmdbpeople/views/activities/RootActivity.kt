@@ -6,6 +6,7 @@ import android.util.Log
 import android.view.MenuItem
 import androidx.appcompat.app.AppCompatActivity
 
+//RootActivity is parent activity to open up button android handle its click on all Activities
 open class RootActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {

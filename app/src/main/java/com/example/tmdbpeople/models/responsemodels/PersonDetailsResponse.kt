@@ -1,5 +1,6 @@
 package com.example.tmdbpeople.models.responsemodels
 
+import com.example.tmdbpeople.models.MovieModel
 import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
 
@@ -46,5 +47,8 @@ class PersonDetailsResponse {
     @SerializedName("homepage")
     @Expose
     var homepage: Any? = null
+    @SerializedName("known_for")
+    @Expose
+    var movies: List<MovieModel>? = null
 
 }

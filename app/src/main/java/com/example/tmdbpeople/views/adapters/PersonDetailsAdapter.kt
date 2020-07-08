@@ -14,14 +14,33 @@ import com.example.tmdbpeople.models.PersonImage
 import com.example.tmdbpeople.models.responsemodels.PersonDetailsResponse
 import com.example.tmdbpeople.networkutils.Constants
 import com.squareup.picasso.Picasso
+import javax.inject.Inject
 
 
-class PersonDetailsAdapter(private val context: Context,private var personImages : ArrayList<PersonImage>,
-                           private var personDetailsResponse: PersonDetailsResponse?,
-    private val onItemClicked: OnItemClicked) : RecyclerView.Adapter<ViewHolder>() {
+class PersonDetailsAdapter() : RecyclerView.Adapter<ViewHolder>() {
+
+    private lateinit var context: Context
+    private lateinit var personImages : ArrayList<PersonImage>
+    private var personDetailsResponse: PersonDetailsResponse? = null
+    private lateinit var onItemClicked: OnItemClicked
+
+    @Inject
+    constructor(context: Context , personImages : ArrayList<PersonImage> , personDetailsResponse: PersonDetailsResponse?
+                ,onItemClicked: OnItemClicked) : this() {
+        this.context = context
+        this.personImages = personImages
+        this.personDetailsResponse = personDetailsResponse
+        this.onItemClicked = onItemClicked
+    }
+
+    //Add dummy person to arrayList to put details view in the zero position in recycler
     fun setPersonDetailsResponse(personDetailsResponse: PersonDetailsResponse?) {
         this.personDetailsResponse = personDetailsResponse
-        personImages.add(0, PersonImage())
+        if (personImages.size > 0) {
+            personImages[0] = PersonImage()
+        } else {
+            personImages.add(PersonImage())
+        }
         notifyItemChanged(0)
     }
 
@@ -92,9 +111,9 @@ class PersonDetailsAdapter(private val context: Context,private var personImages
 
     inner class PersonImageViewHolder(var binding: PersonImageItemBinding) : ViewHolder(binding.root) ,View.OnClickListener{
         init {
+            //Width of every image in grid to be half of screen withd
             val metrics = context.resources.displayMetrics
             val width = metrics.widthPixels
-            val height = metrics.heightPixels
             binding.root.layoutParams.width = (width / 2) - 10
             binding.root.setOnClickListener(this)
         }

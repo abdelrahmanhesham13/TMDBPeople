@@ -8,6 +8,7 @@ import com.example.tmdbpeople.viewmodels.PersonDetailsViewModel
 import com.example.tmdbpeople.viewmodels.PopularPersonsViewModel
 import com.example.tmdbpeople.viewmodels.SearchPersonsViewModel
 
+//Factory class to create ViewModels each with its required parameters
 class CustomViewModelFactory() :
     ViewModelProvider.NewInstanceFactory() {
 
@@ -24,9 +25,9 @@ class CustomViewModelFactory() :
 
     override fun <T : ViewModel> create(modelClass: Class<T>): T {
 
-        if (modelClass.simpleName == "PopularPersonsViewModel") {
+        if (modelClass.simpleName == PopularPersonsViewModel::class.java.simpleName) {
             return PopularPersonsViewModel(loadCallback) as T
-        } else if (modelClass.simpleName == "SearchPersonsViewModel") {
+        } else if (modelClass.simpleName == SearchPersonsViewModel::class.java.simpleName) {
             return SearchPersonsViewModel(loadCallback) as T
         } else {
             return PersonDetailsViewModel(personId) as T

@@ -1,25 +1,28 @@
 package com.example.tmdbpeople.views.activities
 
 import android.content.Intent
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
-import android.view.MenuItem
 import android.view.View
 import android.widget.Toast
 import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.Observer
+import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.tmdbpeople.R
+import com.example.tmdbpeople.dagger.component.DaggerPersonAdapterComponent
+import com.example.tmdbpeople.dagger.component.PersonAdapterComponent
+import com.example.tmdbpeople.dagger.modules.ContextModule
+import com.example.tmdbpeople.dagger.modules.OnItemClickPersonModule
 import com.example.tmdbpeople.databinding.ActivitySearchBinding
 import com.example.tmdbpeople.networkutils.Constants
 import com.example.tmdbpeople.networkutils.LoadCallback
 import com.example.tmdbpeople.viewmodels.SearchPersonsViewModel
 import com.example.tmdbpeople.viewmodels.viewmodelfactory.CustomViewModelFactory
 import com.example.tmdbpeople.views.adapters.PersonAdapter
-import kotlinx.android.synthetic.main.activity_main.*
+import kotlinx.android.synthetic.main.activity_popular_persons.*
 
 class SearchPersonsActivity : RootActivity() , LoadCallback , PersonAdapter.OnItemClicked {
 
@@ -31,7 +34,7 @@ class SearchPersonsActivity : RootActivity() , LoadCallback , PersonAdapter.OnIt
         super.onCreate(savedInstanceState)
         mActivityBinding = DataBindingUtil.setContentView(this,R.layout.activity_search)
         val customViewModelFactory = CustomViewModelFactory(this)
-        mSearchPersonsViewModel = ViewModelProviders.of(this,customViewModelFactory).get(SearchPersonsViewModel::class.java)
+        mSearchPersonsViewModel = ViewModelProvider(this,customViewModelFactory).get(SearchPersonsViewModel::class.java)
         setupViews()
         observeData()
     }
@@ -43,8 +46,8 @@ class SearchPersonsActivity : RootActivity() , LoadCallback , PersonAdapter.OnIt
     }
 
     private fun setupViews() {
-        title = "Search for Person"
-        mPersonsAdapter = PersonAdapter(this,this)
+        title = getString(R.string.search_for_person)
+        injectAdapter()
         mActivityBinding?.searchResultsRecycler?.layoutManager = LinearLayoutManager(this)
         mActivityBinding?.searchResultsRecycler?.setHasFixedSize(true)
         mActivityBinding?.searchResultsRecycler?.adapter = mPersonsAdapter
@@ -65,6 +68,15 @@ class SearchPersonsActivity : RootActivity() , LoadCallback , PersonAdapter.OnIt
             }
 
         })
+    }
+
+    private fun injectAdapter() {
+        val personAdapterComponent: PersonAdapterComponent = DaggerPersonAdapterComponent.builder()
+            .contextModule(ContextModule(this))
+            .onItemClickPersonModule(OnItemClickPersonModule(this))
+            .build()
+
+        mPersonsAdapter = personAdapterComponent.getPersonAdapter()
     }
 
 
