@@ -16,15 +16,16 @@ import com.example.tmdbpeople.datasource.searchdatasource.PersonSearchDataSource
 import com.example.tmdbpeople.datasource.searchdatasource.PersonSearchDataSourceFactory
 import com.example.tmdbpeople.models.PersonModel
 import com.example.tmdbpeople.networkutils.Constants
+import com.example.tmdbpeople.networkutils.LoadCallback
 
-class SearchPersonsViewModel : ViewModel() {
+class SearchPersonsViewModel(var loadCallback: LoadCallback) : ViewModel() {
 
     var personPagedList: LiveData<PagedList<PersonModel?>> = MutableLiveData()
     private var liveDataSource = MutableLiveData<PageKeyedDataSource<Int?, PersonModel?>>()
     internal var personDataSource: PersonSearchDataSourceFactory
 
     init {
-        personDataSource = PersonSearchDataSourceFactory(null)
+        personDataSource = PersonSearchDataSourceFactory(loadCallback,null)
 
         liveDataSource = personDataSource.itemLiveDataSource
 

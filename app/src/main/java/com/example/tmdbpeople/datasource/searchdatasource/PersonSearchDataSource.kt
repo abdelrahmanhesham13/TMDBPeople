@@ -5,14 +5,20 @@ import androidx.paging.PageKeyedDataSource
 import com.example.tmdbpeople.models.PersonModel
 import com.example.tmdbpeople.models.responsemodels.PopularPersonResponse
 import com.example.tmdbpeople.networkutils.Constants
+import com.example.tmdbpeople.networkutils.LoadCallback
 import com.example.tmdbpeople.networkutils.RetrofitService
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 
-class PersonSearchDataSource (private val query : String?) : PageKeyedDataSource<Int?, PersonModel?>() {
+class PersonSearchDataSource (private val loadCallback: com.example.tmdbpeople.networkutils.LoadCallback,private val query : String?) : PageKeyedDataSource<Int?, PersonModel?>() {
     override fun loadInitial(params: LoadInitialParams<Int?>, callback: LoadInitialCallback<Int?, PersonModel?>) {
         if (query != null) {
+            Log.i("PersonSearch",RetrofitService.service.listPopularPersonsForSearch(
+                Constants.API_KEY_VALUE,
+                FIRST_PAGE, query
+            ).request().toString())
+            loadCallback.onFirstLoad()
             RetrofitService.service.listPopularPersonsForSearch(
                 Constants.API_KEY_VALUE,
                 FIRST_PAGE, query
@@ -24,11 +30,18 @@ class PersonSearchDataSource (private val query : String?) : PageKeyedDataSource
                 ) {
 
                     if (response.body() != null) {
-                        if (response.body()!!.persons != null) callback.onResult(
-                            response.body()!!.persons!!,
-                            null,
-                            FIRST_PAGE + 1
-                        )
+                        if (response.body()!!.persons != null) {
+                            callback.onResult(
+                                response.body()!!.persons!!,
+                                null,
+                                FIRST_PAGE + 1
+                            )
+                            loadCallback.onSuccess()
+                        } else {
+                            loadCallback.onError("Server Error")
+                        }
+                    } else {
+                        loadCallback.onError("Server Error")
                     }
                 }
 
@@ -37,6 +50,7 @@ class PersonSearchDataSource (private val query : String?) : PageKeyedDataSource
                     t: Throwable
                 ) {
                     t.printStackTrace()
+                    loadCallback.onError("Network Error")
                 }
             })
         }
@@ -55,10 +69,12 @@ class PersonSearchDataSource (private val query : String?) : PageKeyedDataSource
                 ) {
                     val adjacentKey = if (params.key > 1) params.key - 1 else null
                     if (response.body() != null) {
-                        if (response.body()!!.persons != null) callback.onResult(
-                            response.body()!!.persons!!,
-                            adjacentKey
-                        )
+                        if (response.body()!!.persons != null) {
+                            callback.onResult(
+                                response.body()!!.persons!!,
+                                adjacentKey
+                            )
+                        }
                     }
                 }
 
@@ -74,6 +90,12 @@ class PersonSearchDataSource (private val query : String?) : PageKeyedDataSource
 
     override fun loadAfter(params: PageKeyedDataSource.LoadParams<Int?>, callback: PageKeyedDataSource.LoadCallback<Int?, PersonModel?>) {
         if (query != null) {
+            loadCallback.onLoadMore()
+            Log.i("PersonSearch",RetrofitService.service.listPopularPersonsForSearch(
+                Constants.API_KEY_VALUE,
+                params.key,
+                query
+            ).request().toString())
             RetrofitService.service.listPopularPersonsForSearch(
                 Constants.API_KEY_VALUE,
                 params.key,
@@ -87,11 +109,15 @@ class PersonSearchDataSource (private val query : String?) : PageKeyedDataSource
                         val key =
                             if (response.body()!!.totalPages!! > params.key) params.key + 1 else null
                         callback.onResult(response.body()!!.persons!!, key)
+                        loadCallback.onSuccess()
+                    } else {
+                        loadCallback.onError("Server Error")
                     }
                 }
 
                 override fun onFailure(call: Call<PopularPersonResponse?>, t: Throwable) {
                     t.printStackTrace()
+                    loadCallback.onError("Network Error")
                 }
             })
         }

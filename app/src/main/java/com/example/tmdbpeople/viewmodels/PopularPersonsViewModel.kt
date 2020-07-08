@@ -12,11 +12,12 @@ import com.example.tmdbpeople.networkutils.Constants
 import com.example.tmdbpeople.networkutils.LoadCallback
 
 class PopularPersonsViewModel(private var loadCallback: LoadCallback) : ViewModel() {
+    internal var personDataSourceFactory : PersonDataSourceFactory
     val personPagedList: LiveData<PagedList<PersonModel?>>
     private val liveDataSource: LiveData<PageKeyedDataSource<Int?, PersonModel?>>
 
     init {
-        val personDataSourceFactory = PersonDataSourceFactory(loadCallback,Constants.POPULAR_TYPE , null)
+        personDataSourceFactory = PersonDataSourceFactory(loadCallback, null)
         liveDataSource = personDataSourceFactory.itemLiveDataSource
         val pagedListConfig = PagedList.Config.Builder()
             .setEnablePlaceholders(false)
@@ -25,5 +26,9 @@ class PopularPersonsViewModel(private var loadCallback: LoadCallback) : ViewMode
             personDataSourceFactory,
             pagedListConfig
         ).build()
+    }
+
+    fun invalidate() {
+        personDataSourceFactory.invalidate()
     }
 }

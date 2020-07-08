@@ -64,6 +64,7 @@ class PopularPersonsActivity : AppCompatActivity() , LoadCallback {
     }
 
     private fun setupViews() {
+        setTitle("Popular People")
         mPersonsAdapter = PersonAdapter(this)
         mActivityBinding?.personsRecycler?.layoutManager = LinearLayoutManager(this)
         mActivityBinding?.personsRecycler?.setHasFixedSize(true)
@@ -84,6 +85,9 @@ class PopularPersonsActivity : AppCompatActivity() , LoadCallback {
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         if (item.itemId == R.id.search) {
             startActivity(Intent(this,SearchPersonsActivity::class.java))
+            return true
+        } else if (item.itemId == R.id.refresh) {
+            mPopularPersonsViewModel?.invalidate()
             return true
         }
         return false

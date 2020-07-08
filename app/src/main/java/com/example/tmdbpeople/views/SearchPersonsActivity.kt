@@ -7,17 +7,21 @@ import android.text.TextWatcher
 import android.util.Log
 import android.view.MenuItem
 import android.view.View
+import android.widget.Toast
 import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.tmdbpeople.R
 import com.example.tmdbpeople.databinding.ActivitySearchBinding
+import com.example.tmdbpeople.networkutils.LoadCallback
 import com.example.tmdbpeople.viewmodels.PopularPersonsViewModel
 import com.example.tmdbpeople.viewmodels.SearchPersonsViewModel
+import com.example.tmdbpeople.viewmodels.viewmodelfactory.CustomViewModelFactory
 import com.example.tmdbpeople.views.adapters.PersonAdapter
+import kotlinx.android.synthetic.main.activity_main.*
 
-class SearchPersonsActivity : AppCompatActivity() {
+class SearchPersonsActivity : AppCompatActivity() , LoadCallback {
 
     private var mSearchPersonsViewModel: SearchPersonsViewModel? = null
     var mActivityBinding : ActivitySearchBinding? = null
@@ -28,20 +32,20 @@ class SearchPersonsActivity : AppCompatActivity() {
         mActivityBinding = DataBindingUtil.setContentView(this,R.layout.activity_search)
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
         supportActionBar?.setHomeButtonEnabled(true)
-        mSearchPersonsViewModel = ViewModelProviders.of(this).get(SearchPersonsViewModel::class.java)
+        val customViewModelFactory = CustomViewModelFactory(this)
+        mSearchPersonsViewModel = ViewModelProviders.of(this,customViewModelFactory).get(SearchPersonsViewModel::class.java)
         setupViews()
         observeData()
     }
 
     private fun observeData() {
         mSearchPersonsViewModel?.personPagedList?.observe(this, Observer {
-//            mActivityBinding?.progressBar?.visibility = View.GONE
-//            mActivityBinding?.centerProgressBar?.visibility = View.GONE
             mPersonsAdapter?.submitList(it)
         })
     }
 
     private fun setupViews() {
+        setTitle("Search for Person")
         mPersonsAdapter = PersonAdapter(this)
         mActivityBinding?.searchResultsRecycler?.layoutManager = LinearLayoutManager(this)
         mActivityBinding?.searchResultsRecycler?.setHasFixedSize(true)
@@ -65,6 +69,33 @@ class SearchPersonsActivity : AppCompatActivity() {
         })
     }
 
+
+    override fun onError(message: String) {
+        runOnUiThread(Runnable {
+            progressBar.visibility = View.GONE
+            centerProgressBar.visibility = View.GONE
+        })
+        Toast.makeText(this,message, Toast.LENGTH_LONG).show()
+    }
+
+    override fun onSuccess() {
+        runOnUiThread(Runnable {
+            progressBar.visibility = View.GONE
+            centerProgressBar.visibility = View.GONE
+        })
+    }
+
+    override fun onLoadMore() {
+        runOnUiThread(Runnable {
+            progressBar.visibility = View.VISIBLE
+        })
+    }
+
+    override fun onFirstLoad() {
+        runOnUiThread(Runnable {
+            centerProgressBar.visibility = View.VISIBLE
+        })
+    }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         if (item.itemId == android.R.id.home) {

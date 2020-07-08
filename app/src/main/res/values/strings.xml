@@ -3,4 +3,5 @@
     <string name="person_image">Person Image</string>
     <string name="search">Search</string>
     <string name="type_person_name">Type person name</string>
+    <string name="refresh">Refresh</string>
 </resources>
