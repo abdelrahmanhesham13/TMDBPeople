@@ -1,26 +1,28 @@
 package com.example.tmdbpeople.viewmodels
 
-import android.app.Application
-import android.util.Log
-import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
-import com.example.tmdbpeople.models.responsemodels.PopularPersonResponse
-import com.example.tmdbpeople.repositories.PopularPersonsRepository
-import com.example.tmdbpeople.repositories.PopularPersonsRepository.Companion.instance
+import androidx.lifecycle.ViewModel
+import androidx.paging.LivePagedListBuilder
+import androidx.paging.PageKeyedDataSource
+import androidx.paging.PagedList
+import com.example.tmdbpeople.datasource.PersonDataSource
+import com.example.tmdbpeople.datasource.PersonDataSourceFactory
+import com.example.tmdbpeople.models.PersonModel
 
-class PopularPersonsViewModel(application: Application) :
-    AndroidViewModel(application) {
-    var mPageNumber = 1
-    var popularPersonsList: LiveData<PopularPersonResponse?>?
-    var mPopularPersonsRepository: PopularPersonsRepository? = instance
+class PopularPersonsViewModel : ViewModel() {
+    val itemPagedList: LiveData<PagedList<PersonModel?>>
+    val liveDataSource: LiveData<PageKeyedDataSource<Int, PersonModel>>
 
     init {
-        popularPersonsList = mPopularPersonsRepository?.getPopularPersons(mPageNumber)
-    }
-
-    fun getMoreData() {
-        mPageNumber++
-        Log.d("ViewMode", mPageNumber.toString())
-        mPopularPersonsRepository?.getPopularPersons(mPageNumber)
+        val personDataSourceFactory = PersonDataSourceFactory()
+        liveDataSource = personDataSourceFactory.itemLiveDataSource
+        val pagedListConfig = PagedList.Config.Builder()
+            .setEnablePlaceholders(false)
+            .setPageSize(PersonDataSource.PAGE_SIZE).build()
+        itemPagedList = LivePagedListBuilder(
+            personDataSourceFactory,
+            pagedListConfig
+        )
+            .build()
     }
 }

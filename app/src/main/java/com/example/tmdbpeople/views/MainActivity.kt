@@ -2,56 +2,59 @@ package com.example.tmdbpeople.views
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.util.Log
-import android.widget.Toast
+import android.view.Menu
+import android.view.MenuItem
+import android.view.View
 import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
 import com.example.tmdbpeople.R
 import com.example.tmdbpeople.databinding.ActivityMainBinding
-import com.example.tmdbpeople.models.PersonModel
-import com.example.tmdbpeople.models.responsemodels.PopularPersonResponse
 import com.example.tmdbpeople.viewmodels.PopularPersonsViewModel
-import com.example.tmdbpeople.views.adapters.PersonsAdapter
+import com.example.tmdbpeople.views.adapters.PersonAdapter
 
-class MainActivity : AppCompatActivity() , PersonsAdapter.OnItemClicked {
+class MainActivity : AppCompatActivity() {
 
-    var mPopularPersonsViewModel : PopularPersonsViewModel? = null
-    var mActivityBinding : ActivityMainBinding? = null
-    var mPersonsAdapter : PersonsAdapter? = null
+    var mPopularPersonsViewModel: PopularPersonsViewModel? = null
+    var mActivityBinding: ActivityMainBinding? = null
+    var mPersonsAdapter: PersonAdapter? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        mActivityBinding = DataBindingUtil.setContentView(this,R.layout.activity_main)
-        mPopularPersonsViewModel = ViewModelProviders.of(this).get(PopularPersonsViewModel::class.java)
+        mActivityBinding = DataBindingUtil.setContentView(this, R.layout.activity_main)
+        mPopularPersonsViewModel =
+            ViewModelProviders.of(this).get(PopularPersonsViewModel::class.java)
         setupViews()
         observeData()
     }
 
     private fun setupViews() {
-        mPersonsAdapter = PersonsAdapter(ArrayList(),this,this)
+        mPersonsAdapter = PersonAdapter(this)
         mActivityBinding?.personsRecycler?.layoutManager = LinearLayoutManager(this)
         mActivityBinding?.personsRecycler?.setHasFixedSize(true)
         mActivityBinding?.personsRecycler?.adapter = mPersonsAdapter
     }
 
     private fun observeData() {
-        mPopularPersonsViewModel?.popularPersonsList?.observe(this, Observer {
-            showData(it)
+        mPopularPersonsViewModel?.itemPagedList?.observe(this, Observer {
+            mActivityBinding?.progressBar?.visibility = View.GONE
+            mActivityBinding?.centerProgressBar?.visibility = View.GONE
+            mPersonsAdapter?.submitList(it)
         })
     }
 
-    private fun showData(it: PopularPersonResponse?) {
-        mPersonsAdapter?.addItems(it?.persons as ArrayList<PersonModel>)
+    override fun onCreateOptionsMenu(menu: Menu?): Boolean {
+        menuInflater.inflate(R.menu.menu_main_activity,menu)
+        return true
     }
 
-    override fun onItemClicked(position: Int) {
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        if (item.itemId == R.id.search) {
 
+            return true
+        }
+        return false
     }
 
-    override fun onLoadMore() {
-        mPopularPersonsViewModel?.getMoreData()
-    }
 }
