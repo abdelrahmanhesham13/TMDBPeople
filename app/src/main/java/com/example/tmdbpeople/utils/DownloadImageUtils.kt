@@ -4,6 +4,7 @@ import android.content.Context
 import android.graphics.Bitmap
 import android.graphics.drawable.Drawable
 import android.os.Environment
+import android.widget.Toast
 import com.example.tmdbpeople.R
 import com.example.tmdbpeople.utils.networkutils.ConnectionUtils
 import com.example.tmdbpeople.utils.networkutils.Constants

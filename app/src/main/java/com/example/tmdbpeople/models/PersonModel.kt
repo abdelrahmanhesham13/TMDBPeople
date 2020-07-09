@@ -4,8 +4,10 @@ import com.example.tmdbpeople.R
 import com.example.tmdbpeople.utils.networkutils.Constants
 import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
+import javax.inject.Inject
 
-class PersonModel {
+class PersonModel @Inject constructor() {
+
     @SerializedName("birthday")
     @Expose
     var birthday: String? = null
@@ -66,6 +68,25 @@ class PersonModel {
 
     fun getImageFullPath() : String {
         return Constants.IMAGE_BASE_URL_500W + profilePath
+    }
+
+    override fun hashCode(): Int {
+        var result = birthday?.hashCode() ?: 0
+        result = 31 * result + (knownForDepartment?.hashCode() ?: 0)
+        result = 31 * result + (deathday?.hashCode() ?: 0)
+        result = 31 * result + (id ?: 0)
+        result = 31 * result + (name?.hashCode() ?: 0)
+        result = 31 * result + (alsoKnownAs?.hashCode() ?: 0)
+        result = 31 * result + (gender ?: 0)
+        result = 31 * result + (biography?.hashCode() ?: 0)
+        result = 31 * result + (popularity?.hashCode() ?: 0)
+        result = 31 * result + (placeOfBirth?.hashCode() ?: 0)
+        result = 31 * result + (profilePath?.hashCode() ?: 0)
+        result = 31 * result + (adult?.hashCode() ?: 0)
+        result = 31 * result + (imdbId?.hashCode() ?: 0)
+        result = 31 * result + (homepage?.hashCode() ?: 0)
+        result = 31 * result + (movies?.hashCode() ?: 0)
+        return result
     }
 
 }
