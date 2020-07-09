@@ -1,23 +1,13 @@
 package com.example.tmdbpeople.views.activities
 
-import android.Manifest
-import android.content.pm.PackageManager
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
-import android.widget.Toast
-import androidx.core.app.ActivityCompat
-import androidx.core.content.ContextCompat
-import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.ViewModelProvider
 import com.example.tmdbpeople.R
 import com.example.tmdbpeople.databinding.ActivityImageViewerBinding
-import com.example.tmdbpeople.networkutils.Constants
-import com.example.tmdbpeople.utils.DownloadImageUtils
 import com.example.tmdbpeople.viewmodels.ImageViewerViewModel
 import com.example.tmdbpeople.views.baseviews.BaseActivityWithViewModel
-import com.squareup.picasso.Picasso
 
 class ImageViewerActivity : BaseActivityWithViewModel<ImageViewerViewModel , ActivityImageViewerBinding>() {
     

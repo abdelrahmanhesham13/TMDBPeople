@@ -12,7 +12,7 @@ import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.AndroidViewModel
 import com.example.tmdbpeople.R
-import com.example.tmdbpeople.networkutils.Constants
+import com.example.tmdbpeople.utils.networkutils.Constants
 import com.example.tmdbpeople.utils.DownloadImageUtils
 import com.squareup.picasso.Picasso
 

@@ -1,4 +1,4 @@
-package com.example.tmdbpeople.networkutils
+package com.example.tmdbpeople.utils.networkutils
 
 import com.example.tmdbpeople.R
 

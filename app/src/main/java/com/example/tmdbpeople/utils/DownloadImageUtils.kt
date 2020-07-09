@@ -4,13 +4,9 @@ import android.content.Context
 import android.graphics.Bitmap
 import android.graphics.drawable.Drawable
 import android.os.Environment
-import android.os.Handler
-import android.os.Looper
-import android.util.Log
-import android.widget.Toast
 import com.example.tmdbpeople.R
-import com.example.tmdbpeople.networkutils.ConnectionUtils
-import com.example.tmdbpeople.networkutils.Constants
+import com.example.tmdbpeople.utils.networkutils.ConnectionUtils
+import com.example.tmdbpeople.utils.networkutils.Constants
 import com.squareup.picasso.Picasso
 import com.squareup.picasso.Picasso.LoadedFrom
 import com.squareup.picasso.Target

@@ -1,7 +1,7 @@
 package com.example.tmdbpeople.dagger.modules.network
 
-import com.example.tmdbpeople.networkutils.Constants
-import com.example.tmdbpeople.networkutils.PersonsService
+import com.example.tmdbpeople.utils.networkutils.Constants
+import com.example.tmdbpeople.utils.networkutils.PersonsService
 import dagger.Module
 import dagger.Provides
 import okhttp3.Interceptor
@@ -10,15 +10,13 @@ import retrofit2.Retrofit
 import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory
 import retrofit2.converter.gson.GsonConverterFactory
 import javax.inject.Singleton
-
-
 @Module
 class NetworkServiceModule {
 
     @Provides
     @Singleton
     fun providesRetrofit(): Retrofit {
-        val requestInterceptor = Interceptor{ chain ->
+        val requestInterceptor = Interceptor { chain ->
             // Interceptor take only one argument which is a lambda function so parenthesis can be omitted
             val url = chain.request()
                 .url()

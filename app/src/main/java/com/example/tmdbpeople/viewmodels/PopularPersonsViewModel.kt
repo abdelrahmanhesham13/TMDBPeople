@@ -8,7 +8,7 @@ import androidx.paging.PageKeyedDataSource
 import androidx.paging.PagedList
 import com.example.tmdbpeople.datasource.populardatasource.PersonDataSourceFactory
 import com.example.tmdbpeople.models.PersonModel
-import com.example.tmdbpeople.networkutils.Constants
+import com.example.tmdbpeople.utils.networkutils.Constants
 
 //PopularPersonsViewModel create DataSource Factory for Person List Pagination and create LiveData object to observe on it
 class PopularPersonsViewModel(application: Application) : AndroidViewModel(application) {

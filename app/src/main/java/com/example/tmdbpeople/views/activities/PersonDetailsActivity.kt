@@ -15,7 +15,7 @@ import com.example.tmdbpeople.dagger.modules.ContextModule
 import com.example.tmdbpeople.dagger.modules.clickhandlers.OnImageClickedModule
 import com.example.tmdbpeople.databinding.ActivityPersonDetailsBinding
 import com.example.tmdbpeople.models.PersonImage
-import com.example.tmdbpeople.networkutils.Constants
+import com.example.tmdbpeople.utils.networkutils.Constants
 import com.example.tmdbpeople.viewmodels.PersonDetailsViewModel
 import com.example.tmdbpeople.viewmodels.viewmodelfactory.CustomViewModelFactory
 import com.example.tmdbpeople.views.viewutils.SpacesItemDecoration
@@ -92,7 +92,6 @@ class PersonDetailsActivity : BaseActivityWithViewModel<PersonDetailsViewModel, 
 
         personDetailsAdapterComponent.inject(this)
     }
-
 
     override fun onImageClicked(image: String?) {
         startActivity(Intent(this,ImageViewerActivity::class.java)

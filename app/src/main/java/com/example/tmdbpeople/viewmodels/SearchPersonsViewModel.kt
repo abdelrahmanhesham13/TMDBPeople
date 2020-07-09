@@ -10,7 +10,7 @@ import androidx.paging.PagedList
 
 import com.example.tmdbpeople.datasource.searchdatasource.PersonSearchDataSourceFactory
 import com.example.tmdbpeople.models.PersonModel
-import com.example.tmdbpeople.networkutils.Constants
+import com.example.tmdbpeople.utils.networkutils.Constants
 
 class SearchPersonsViewModel(application: Application) : AndroidViewModel(application) {
 

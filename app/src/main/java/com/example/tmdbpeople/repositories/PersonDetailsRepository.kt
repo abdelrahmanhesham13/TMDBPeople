@@ -8,9 +8,9 @@ import com.example.tmdbpeople.dagger.component.network.NetworkServiceComponent
 import com.example.tmdbpeople.models.PersonImage
 import com.example.tmdbpeople.models.PersonModel
 import com.example.tmdbpeople.models.responsemodels.PersonImagesResponse
-import com.example.tmdbpeople.networkutils.ConnectionUtils
-import com.example.tmdbpeople.networkutils.Constants
-import com.example.tmdbpeople.networkutils.PersonsService
+import com.example.tmdbpeople.utils.networkutils.ConnectionUtils
+import com.example.tmdbpeople.utils.networkutils.Constants
+import com.example.tmdbpeople.utils.networkutils.PersonsService
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.schedulers.Schedulers

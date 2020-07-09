@@ -1,8 +1,7 @@
 package com.example.tmdbpeople.models
 
 import com.example.tmdbpeople.R
-import com.example.tmdbpeople.models.MovieModel
-import com.example.tmdbpeople.networkutils.Constants
+import com.example.tmdbpeople.utils.networkutils.Constants
 import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
 

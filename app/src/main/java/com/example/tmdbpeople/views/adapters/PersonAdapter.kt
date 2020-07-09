@@ -11,7 +11,6 @@ import androidx.recyclerview.widget.RecyclerView.ViewHolder
 import com.example.tmdbpeople.R
 import com.example.tmdbpeople.databinding.PersonItemBinding
 import com.example.tmdbpeople.models.PersonModel
-import com.example.tmdbpeople.networkutils.Constants
 import com.example.tmdbpeople.views.adapters.PersonAdapter.PersonViewHolder
 import com.squareup.picasso.Picasso
 import javax.inject.Inject

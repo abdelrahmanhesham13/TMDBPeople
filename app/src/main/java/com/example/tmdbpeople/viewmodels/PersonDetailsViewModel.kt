@@ -7,7 +7,7 @@ import com.example.tmdbpeople.dagger.component.repositories.DaggerPersonDetailsR
 import com.example.tmdbpeople.dagger.modules.ContextModule
 import com.example.tmdbpeople.models.PersonModel
 import com.example.tmdbpeople.models.responsemodels.PersonImagesResponse
-import com.example.tmdbpeople.networkutils.Constants
+import com.example.tmdbpeople.utils.networkutils.Constants
 import com.example.tmdbpeople.repositories.PersonDetailsRepository
 import io.reactivex.disposables.CompositeDisposable
 import javax.inject.Inject

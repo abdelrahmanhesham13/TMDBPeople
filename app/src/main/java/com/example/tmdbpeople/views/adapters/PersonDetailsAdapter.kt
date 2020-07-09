@@ -12,7 +12,6 @@ import com.example.tmdbpeople.databinding.PersonDetailsItemBinding
 import com.example.tmdbpeople.databinding.PersonImageItemBinding
 import com.example.tmdbpeople.models.PersonImage
 import com.example.tmdbpeople.models.PersonModel
-import com.example.tmdbpeople.networkutils.Constants
 import com.squareup.picasso.Picasso
 import javax.inject.Inject
 

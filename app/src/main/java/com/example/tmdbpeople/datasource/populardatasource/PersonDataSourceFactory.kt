@@ -6,7 +6,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.paging.DataSource
 import androidx.paging.PageKeyedDataSource
 import com.example.tmdbpeople.models.PersonModel
-import com.example.tmdbpeople.networkutils.Constants
+import com.example.tmdbpeople.utils.networkutils.Constants
 import io.reactivex.disposables.CompositeDisposable
 
 //DataSource Factory used to create Person DataSource object and post it to LiveData
