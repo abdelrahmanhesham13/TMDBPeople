@@ -14,7 +14,7 @@ class PersonDetailsViewModel(personId: Int, context: Context) : ViewModel() {
     var personDetailsLiveData: LiveData<PersonModel?>?
     var personImagesLiveData: LiveData<PersonImagesResponse?>?
     var loadStateLiveData: LiveData<Int>?
-    var errorStateLiveData: LiveData<String>?
+    var errorStateLiveData: LiveData<Int>?
     var compositeDisposable: CompositeDisposable?
 
     init {

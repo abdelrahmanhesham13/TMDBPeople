@@ -22,14 +22,14 @@ class PersonDetailsAdapter() : RecyclerView.Adapter<ViewHolder>() {
     private lateinit var context: Context
     private lateinit var personImages : ArrayList<PersonImage>
     private var personModel: PersonModel? = null
-    private lateinit var onItemClicked: OnItemClicked
+    private lateinit var onImageClicked: OnImageClicked
 
     @Inject
-    constructor(context: Context, personImages : ArrayList<PersonImage>, personModel: PersonModel?, onItemClicked: OnItemClicked) : this() {
+    constructor(context: Context, personImages : ArrayList<PersonImage>, personModel: PersonModel?, onImageClicked: OnImageClicked) : this() {
         this.context = context
         this.personImages = personImages
         this.personModel = personModel
-        this.onItemClicked = onItemClicked
+        this.onImageClicked = onImageClicked
     }
 
     //Add person details cell
@@ -86,7 +86,7 @@ class PersonDetailsAdapter() : RecyclerView.Adapter<ViewHolder>() {
 
     inner class PersonImageViewHolder(var binding: PersonImageItemBinding) : ViewHolder(binding.root) ,View.OnClickListener{
         init {
-            //Width of every image in grid to be half of screen withd
+            //Width of every image in grid to be half of screen width
             val metrics = context.resources.displayMetrics
             val width = metrics.widthPixels
             binding.root.layoutParams.width = (width / 2) - 10
@@ -94,7 +94,7 @@ class PersonDetailsAdapter() : RecyclerView.Adapter<ViewHolder>() {
         }
 
         override fun onClick(v: View?) {
-            onItemClicked.onItemClicked(personImages.get(adapterPosition).filePath)
+            onImageClicked.onImageClicked(personImages.get(adapterPosition).filePath)
         }
     }
 
@@ -103,8 +103,8 @@ class PersonDetailsAdapter() : RecyclerView.Adapter<ViewHolder>() {
         const val IMAGE_VIEW_TYPE = 2
     }
 
-    interface OnItemClicked {
-        fun onItemClicked(image : String?)
+    interface OnImageClicked {
+        fun onImageClicked(image : String?)
     }
 
 }

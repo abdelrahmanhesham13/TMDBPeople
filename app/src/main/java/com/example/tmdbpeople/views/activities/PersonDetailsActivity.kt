@@ -12,10 +12,9 @@ import com.example.tmdbpeople.R
 import com.example.tmdbpeople.dagger.component.DaggerPersonDetailsAdapterComponent
 import com.example.tmdbpeople.dagger.component.PersonDetailsAdapterComponent
 import com.example.tmdbpeople.dagger.modules.ContextModule
-import com.example.tmdbpeople.dagger.modules.OnItemClickedImageModule
+import com.example.tmdbpeople.dagger.modules.clickhandlers.OnImageClickedModule
 import com.example.tmdbpeople.databinding.ActivityPersonDetailsBinding
 import com.example.tmdbpeople.models.PersonImage
-import com.example.tmdbpeople.models.PersonModel
 import com.example.tmdbpeople.networkutils.Constants
 import com.example.tmdbpeople.viewmodels.PersonDetailsViewModel
 import com.example.tmdbpeople.viewmodels.viewmodelfactory.CustomViewModelFactory
@@ -26,7 +25,7 @@ import kotlinx.android.synthetic.main.activity_popular_persons.*
 import javax.inject.Inject
 
 
-class PersonDetailsActivity : BaseActivityWithViewModel<PersonDetailsViewModel, ActivityPersonDetailsBinding>() , PersonDetailsAdapter.OnItemClicked {
+class PersonDetailsActivity : BaseActivityWithViewModel<PersonDetailsViewModel, ActivityPersonDetailsBinding>() , PersonDetailsAdapter.OnImageClicked {
 
     @Inject
     lateinit var mPersonDetailsAdapter: PersonDetailsAdapter
@@ -88,14 +87,18 @@ class PersonDetailsActivity : BaseActivityWithViewModel<PersonDetailsViewModel, 
         val personDetailsAdapterComponent: PersonDetailsAdapterComponent =
             DaggerPersonDetailsAdapterComponent.builder()
                 .contextModule(ContextModule(this))
-                .onItemClickedImageModule(OnItemClickedImageModule(this))
+                .onImageClickedModule(
+                    OnImageClickedModule(
+                        this
+                    )
+                )
                 .build()
 
         personDetailsAdapterComponent.inject(this)
     }
 
 
-    override fun onItemClicked(image: String?) {
+    override fun onImageClicked(image: String?) {
         startActivity(Intent(this,ImageViewerActivity::class.java)
             .putExtra(Constants.IMAGE_KEY,image))
     }

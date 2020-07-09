@@ -3,32 +3,40 @@ package com.example.tmdbpeople.datasource.searchdatasource
 import android.content.Context
 import androidx.lifecycle.MutableLiveData
 import androidx.paging.PageKeyedDataSource
+import com.example.tmdbpeople.dagger.component.DaggerNetworkServiceComponent
+import com.example.tmdbpeople.dagger.component.NetworkServiceComponent
 import com.example.tmdbpeople.models.PersonModel
-import com.example.tmdbpeople.models.responsemodels.PopularPersonResponse
 import com.example.tmdbpeople.networkutils.ConnectionUtils
 import com.example.tmdbpeople.networkutils.Constants
-import com.example.tmdbpeople.networkutils.RetrofitService
+import com.example.tmdbpeople.networkutils.PersonsService
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.schedulers.Schedulers
-import retrofit2.Call
-import retrofit2.Callback
-import retrofit2.Response
+import javax.inject.Inject
 
-class PersonSearchDataSource(private val context: Context,private val query: String, private val loadingLiveData: MutableLiveData<Int>, private val errorLiveData: MutableLiveData<String> , private val compositeDisposable: CompositeDisposable?) : PageKeyedDataSource<Int?, PersonModel?>() {
+class PersonSearchDataSource(private val context: Context,private val query: String, private val loadingLiveData: MutableLiveData<Int>, private val errorLiveData: MutableLiveData<Int> , private val compositeDisposable: CompositeDisposable?) : PageKeyedDataSource<Int?, PersonModel?>() {
+
+    @Inject
+    lateinit var service : PersonsService
+
+    init {
+        val networkServiceComponent : NetworkServiceComponent = DaggerNetworkServiceComponent.builder()
+            .build()
+        networkServiceComponent.inject(this)
+    }
 
     //Function Loads the data for first time (page number 1)
     override fun loadInitial(params: LoadInitialParams<Int?>, callback: LoadInitialCallback<Int?, PersonModel?>) {
         if (ConnectionUtils.isOnline(context) && query.isNotEmpty()) {
             loadingLiveData.postValue(Constants.FIRST_LOAD_STATE)
-            compositeDisposable?.add(RetrofitService.service.listPopularPersonsForSearch(Constants.API_KEY_VALUE,Constants.FIRST_PAGE,query)
+            compositeDisposable?.add(service.listPopularPersonsForSearch(Constants.API_KEY_VALUE,Constants.FIRST_PAGE,query)
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribeOn(Schedulers.io())
                 .subscribe({
                     callback.onResult(it.people!!, null, Constants.FIRST_PAGE + 1)
                     loadingLiveData.postValue(Constants.SUCCESS_STATE)
                 },{
-                    errorLiveData.postValue(Constants.NETWORK_ERROR_MESSAGE)
+                    errorLiveData.postValue(Constants.SERVER_ERROR_MESSAGE)
                 }))
         } else if (query.isNotEmpty()) {
             errorLiveData.postValue(Constants.NETWORK_ERROR_MESSAGE)
@@ -45,7 +53,7 @@ class PersonSearchDataSource(private val context: Context,private val query: Str
     override fun loadAfter(params: LoadParams<Int?>, callback: LoadCallback<Int?, PersonModel?>) {
         if (ConnectionUtils.isOnline(context) && query.isNotEmpty()){
             loadingLiveData.postValue(Constants.LOAD_MORE_STATE)
-            compositeDisposable?.add(RetrofitService.service.listPopularPersonsForSearch(Constants.API_KEY_VALUE, params.key, query)
+            compositeDisposable?.add(service.listPopularPersonsForSearch(Constants.API_KEY_VALUE, params.key, query)
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribeOn(Schedulers.io())
                 .subscribe({
@@ -53,7 +61,7 @@ class PersonSearchDataSource(private val context: Context,private val query: Str
                     callback.onResult(it.people!!, key)
                     loadingLiveData.postValue(Constants.SUCCESS_STATE)
                 },{
-                    errorLiveData.postValue(Constants.NETWORK_ERROR_MESSAGE)
+                    errorLiveData.postValue(Constants.SERVER_ERROR_MESSAGE)
                 }))
         } else if (query.isNotEmpty()) {
             errorLiveData.postValue(Constants.NETWORK_ERROR_MESSAGE)

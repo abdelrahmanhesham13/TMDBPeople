@@ -1,13 +1,15 @@
 package com.example.tmdbpeople.dagger.component
 
 import com.example.tmdbpeople.dagger.modules.ContextModule
-import com.example.tmdbpeople.dagger.modules.OnItemClickPersonModule
-import com.example.tmdbpeople.views.adapters.PersonAdapter
+import com.example.tmdbpeople.dagger.modules.clickhandlers.OnPersonClickedModule
+import com.example.tmdbpeople.views.activities.PopularPersonsActivity
+import com.example.tmdbpeople.views.activities.SearchPersonsActivity
 import dagger.Component
 
-@Component(modules = [ContextModule::class, OnItemClickPersonModule::class])
+@Component(modules = [ContextModule::class, OnPersonClickedModule::class])
 interface PersonAdapterComponent {
 
-    fun getPersonAdapter() : PersonAdapter
+    fun inject(popularPersonsActivity: PopularPersonsActivity)
+    fun inject(searchPersonsActivity: SearchPersonsActivity)
 
 }

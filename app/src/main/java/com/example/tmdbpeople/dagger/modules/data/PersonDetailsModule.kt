@@ -1,4 +1,4 @@
-package com.example.tmdbpeople.dagger.modules
+package com.example.tmdbpeople.dagger.modules.data
 
 import com.example.tmdbpeople.models.PersonModel
 import dagger.Module

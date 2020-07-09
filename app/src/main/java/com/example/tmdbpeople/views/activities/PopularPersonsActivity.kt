@@ -2,35 +2,31 @@ package com.example.tmdbpeople.views.activities
 
 import android.content.Intent
 import android.os.Bundle
-import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
-import android.widget.Toast
-import androidx.appcompat.app.AppCompatActivity
-import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
-import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.tmdbpeople.R
 import com.example.tmdbpeople.dagger.component.DaggerPersonAdapterComponent
 import com.example.tmdbpeople.dagger.component.PersonAdapterComponent
 import com.example.tmdbpeople.dagger.modules.ContextModule
-import com.example.tmdbpeople.dagger.modules.OnItemClickPersonModule
+import com.example.tmdbpeople.dagger.modules.clickhandlers.OnPersonClickedModule
 import com.example.tmdbpeople.databinding.ActivityPopularPersonsBinding
 import com.example.tmdbpeople.networkutils.Constants
-import com.example.tmdbpeople.networkutils.LoadCallback
+import com.example.tmdbpeople.utils.PrintUtils
 import com.example.tmdbpeople.viewmodels.PopularPersonsViewModel
-import com.example.tmdbpeople.viewmodels.viewmodelfactory.CustomViewModelFactory
 import com.example.tmdbpeople.views.adapters.PersonAdapter
 import com.example.tmdbpeople.views.baseviews.BaseActivityWithViewModel
 import kotlinx.android.synthetic.main.activity_popular_persons.*
+import javax.inject.Inject
 
 
-class PopularPersonsActivity : BaseActivityWithViewModel<PopularPersonsViewModel , ActivityPopularPersonsBinding>() , PersonAdapter.OnItemClicked {
+class PopularPersonsActivity : BaseActivityWithViewModel<PopularPersonsViewModel , ActivityPopularPersonsBinding>() , PersonAdapter.OnPersonClicked {
 
-    private lateinit var mPersonsAdapter: PersonAdapter
+    @Inject
+    public lateinit var mPersonsAdapter: PersonAdapter
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -48,17 +44,21 @@ class PopularPersonsActivity : BaseActivityWithViewModel<PopularPersonsViewModel
     private fun injectAdapter() {
         val personAdapterComponent: PersonAdapterComponent = DaggerPersonAdapterComponent.builder()
             .contextModule(ContextModule(this))
-            .onItemClickPersonModule(OnItemClickPersonModule(this))
+            .onPersonClickedModule(
+                OnPersonClickedModule(
+                    this
+                )
+            )
             .build()
 
-        mPersonsAdapter = personAdapterComponent.getPersonAdapter()
+        personAdapterComponent.inject(this)
     }
 
     private fun observeData() {
         mActivityViewModel?.getErrorLiveData()?.observe(this, Observer {
             progressBar.visibility = View.GONE
             centerProgressBar.visibility = View.GONE
-            Toast.makeText(this,it,Toast.LENGTH_LONG).show()
+            PrintUtils.printMessage(this,it)
         })
         mActivityViewModel?.getStateLiveData()?.observe(this, Observer {
             when (it) {
@@ -96,7 +96,7 @@ class PopularPersonsActivity : BaseActivityWithViewModel<PopularPersonsViewModel
         return false
     }
 
-    override fun onItemClicked(id: Int?) {
+    override fun onPersonClicked(id: Int?) {
         startActivity(Intent(this,PersonDetailsActivity::class.java).putExtra(Constants.PERSON_ID_PATH,id))
     }
 

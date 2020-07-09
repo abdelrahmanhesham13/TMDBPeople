@@ -1,5 +1,7 @@
 package com.example.tmdbpeople.networkutils
 
+import com.example.tmdbpeople.R
+
 object Constants {
     const val EMPTY_STRING = ""
     const val API_KEY_VALUE = "0efba935e2a7ae505a19b8fbef7f4c76"
@@ -18,10 +20,9 @@ object Constants {
     const val PERSON_ID_PATH_DEFAULT_VALUE = 0
     const val PAGE_SIZE = 20
     const val FIRST_PAGE = 1
-    const val SERVER_ERROR_MESSAGE = "Server Error"
-    const val NETWORK_ERROR_MESSAGE = "Network Error"
+    const val NETWORK_ERROR_MESSAGE = R.string.network_error
+    const val SERVER_ERROR_MESSAGE = R.string.server_error
     const val FIRST_LOAD_STATE = 1
     const val LOAD_MORE_STATE = 2
     const val SUCCESS_STATE = 3
-    const val WAIT_TEXT_STATE = 4
 }

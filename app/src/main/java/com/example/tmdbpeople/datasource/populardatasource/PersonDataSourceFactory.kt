@@ -11,7 +11,7 @@ import io.reactivex.disposables.CompositeDisposable
 //DataSource Factory used to create Person DataSource object and post it to LiveData
 class PersonDataSourceFactory(val context: Context) : DataSource.Factory<Int?, PersonModel?>() {
     private val loadingLiveData : MutableLiveData<Int> = MutableLiveData()
-    private val errorLiveData : MutableLiveData<String> = MutableLiveData()
+    private val errorLiveData : MutableLiveData<Int> = MutableLiveData()
     private var personDataSource : PersonDataSource? = null
     var compositeDisposable : CompositeDisposable?  = CompositeDisposable()
     val itemLiveDataSource = MutableLiveData<PageKeyedDataSource<Int?, PersonModel?>>()
@@ -26,7 +26,7 @@ class PersonDataSourceFactory(val context: Context) : DataSource.Factory<Int?, P
         return loadingLiveData
     }
 
-    fun getErrorLiveData() : LiveData<String>? {
+    fun getErrorLiveData() : LiveData<Int>? {
         return errorLiveData
     }
 

@@ -20,9 +20,7 @@ import com.example.tmdbpeople.views.baseviews.BaseActivityWithViewModel
 import com.squareup.picasso.Picasso
 
 class ImageViewerActivity : BaseActivityWithViewModel<ImageViewerViewModel , ActivityImageViewerBinding>() {
-
-
-
+    
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         title = getString(R.string.person_image)

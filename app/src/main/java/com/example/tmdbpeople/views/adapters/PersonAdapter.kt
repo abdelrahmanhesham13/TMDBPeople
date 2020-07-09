@@ -20,12 +20,12 @@ import javax.inject.Inject
 class PersonAdapter() : PagedListAdapter<PersonModel, PersonViewHolder>(DIFF_CALLBACK) {
 
     private lateinit var mCtx: Context
-    lateinit var onItemClicked: OnItemClicked
+    lateinit var onPersonClicked: OnPersonClicked
 
     @Inject
-    constructor (mCtx: Context, onItemClicked: OnItemClicked) : this() {
+    constructor (mCtx: Context, onPersonClicked: OnPersonClicked) : this() {
         this.mCtx = mCtx
-        this.onItemClicked = onItemClicked
+        this.onPersonClicked = onPersonClicked
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): PersonViewHolder {
@@ -55,7 +55,7 @@ class PersonAdapter() : PagedListAdapter<PersonModel, PersonViewHolder>(DIFF_CAL
         }
 
         override fun onClick(v: View?) {
-            onItemClicked.onItemClicked(getItem(adapterPosition)?.id)
+            onPersonClicked.onPersonClicked(getItem(adapterPosition)?.id)
         }
     }
 
@@ -72,8 +72,8 @@ class PersonAdapter() : PagedListAdapter<PersonModel, PersonViewHolder>(DIFF_CAL
             }
     }
 
-    interface OnItemClicked {
-        fun onItemClicked(id: Int?)
+    interface OnPersonClicked {
+        fun onPersonClicked(id: Int?)
     }
 
 }

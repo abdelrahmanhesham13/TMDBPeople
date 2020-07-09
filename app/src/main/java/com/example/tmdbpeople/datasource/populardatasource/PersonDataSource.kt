@@ -3,16 +3,28 @@ package com.example.tmdbpeople.datasource.populardatasource
 import android.content.Context
 import androidx.lifecycle.MutableLiveData
 import androidx.paging.PageKeyedDataSource
+import com.example.tmdbpeople.dagger.component.DaggerNetworkServiceComponent
+import com.example.tmdbpeople.dagger.component.NetworkServiceComponent
 import com.example.tmdbpeople.models.PersonModel
 import com.example.tmdbpeople.networkutils.ConnectionUtils
 import com.example.tmdbpeople.networkutils.Constants
-import com.example.tmdbpeople.networkutils.RetrofitService.service
+import com.example.tmdbpeople.networkutils.PersonsService
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.schedulers.Schedulers
+import javax.inject.Inject
 
 //DataSource class for popular persons pagination
-class PersonDataSource(private val context: Context, private val loadingLiveData: MutableLiveData<Int>, private val errorLiveData: MutableLiveData<String>, val compositeDisposable: CompositeDisposable?) : PageKeyedDataSource<Int?, PersonModel?>() {
+class PersonDataSource(private val context: Context, private val loadingLiveData: MutableLiveData<Int>, private val errorLiveData: MutableLiveData<Int>, val compositeDisposable: CompositeDisposable?) : PageKeyedDataSource<Int?, PersonModel?>() {
+
+    @Inject
+    lateinit var service : PersonsService
+
+    init {
+        val networkServiceComponent : NetworkServiceComponent = DaggerNetworkServiceComponent.builder()
+            .build()
+        networkServiceComponent.inject(this)
+    }
 
     //Function Loads the data for first time (page number 1)
     override fun loadInitial(params: LoadInitialParams<Int?>, callback: LoadInitialCallback<Int?, PersonModel?>) {
@@ -25,7 +37,7 @@ class PersonDataSource(private val context: Context, private val loadingLiveData
                     callback.onResult(it.people!!, null, Constants.FIRST_PAGE + 1)
                     loadingLiveData.postValue(Constants.SUCCESS_STATE)
                 }, {
-                    errorLiveData.postValue(Constants.NETWORK_ERROR_MESSAGE)
+                    errorLiveData.postValue(Constants.SERVER_ERROR_MESSAGE)
                 }))
         } else {
             errorLiveData.postValue(Constants.NETWORK_ERROR_MESSAGE)
@@ -50,7 +62,7 @@ class PersonDataSource(private val context: Context, private val loadingLiveData
                     callback.onResult(it.people!!, key)
                     loadingLiveData.postValue(Constants.SUCCESS_STATE)
                 },{
-                    errorLiveData.postValue(Constants.NETWORK_ERROR_MESSAGE)
+                    errorLiveData.postValue(Constants.SERVER_ERROR_MESSAGE)
                 }))
         } else {
             errorLiveData.postValue(Constants.NETWORK_ERROR_MESSAGE)

@@ -5,29 +5,27 @@ import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
 import android.view.View
-import android.widget.Toast
-import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
-import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.tmdbpeople.R
 import com.example.tmdbpeople.dagger.component.DaggerPersonAdapterComponent
 import com.example.tmdbpeople.dagger.component.PersonAdapterComponent
 import com.example.tmdbpeople.dagger.modules.ContextModule
-import com.example.tmdbpeople.dagger.modules.OnItemClickPersonModule
+import com.example.tmdbpeople.dagger.modules.clickhandlers.OnPersonClickedModule
 import com.example.tmdbpeople.databinding.ActivitySearchBinding
 import com.example.tmdbpeople.networkutils.Constants
-import com.example.tmdbpeople.networkutils.LoadCallback
+import com.example.tmdbpeople.utils.PrintUtils
 import com.example.tmdbpeople.viewmodels.SearchPersonsViewModel
-import com.example.tmdbpeople.viewmodels.viewmodelfactory.CustomViewModelFactory
 import com.example.tmdbpeople.views.adapters.PersonAdapter
 import com.example.tmdbpeople.views.baseviews.BaseActivityWithViewModel
 import kotlinx.android.synthetic.main.activity_popular_persons.*
+import javax.inject.Inject
 
-class SearchPersonsActivity : BaseActivityWithViewModel<SearchPersonsViewModel , ActivitySearchBinding>() , PersonAdapter.OnItemClicked {
+class SearchPersonsActivity : BaseActivityWithViewModel<SearchPersonsViewModel , ActivitySearchBinding>() , PersonAdapter.OnPersonClicked , TextWatcher {
 
-    lateinit var mPersonsAdapter : PersonAdapter
+    @Inject
+    public lateinit var mPersonsAdapter : PersonAdapter
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -39,7 +37,7 @@ class SearchPersonsActivity : BaseActivityWithViewModel<SearchPersonsViewModel ,
         mActivityViewModel?.getErrorLiveData()?.observe(this, Observer {
             progressBar.visibility = View.GONE
             centerProgressBar.visibility = View.GONE
-            Toast.makeText(this,it, Toast.LENGTH_LONG).show()
+            PrintUtils.printMessage(this,it)
         })
         mActivityViewModel?.getStateLiveData()?.observe(this, Observer {
             when (it) {
@@ -68,32 +66,23 @@ class SearchPersonsActivity : BaseActivityWithViewModel<SearchPersonsViewModel ,
         mActivityBinding?.searchResultsRecycler?.layoutManager = LinearLayoutManager(this)
         mActivityBinding?.searchResultsRecycler?.adapter = mPersonsAdapter
 
-        mActivityBinding?.searchEditText?.addTextChangedListener(object : TextWatcher {
-            override fun afterTextChanged(s: Editable?) {
-                if (s!!.isNotEmpty()) {
-                    mActivityViewModel?.doSearch(s.toString())
-                }
-            }
-
-            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
-            }
-
-            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
-            }
-
-        })
+        mActivityBinding?.searchEditText?.addTextChangedListener(this)
     }
 
     private fun injectAdapter() {
         val personAdapterComponent: PersonAdapterComponent = DaggerPersonAdapterComponent.builder()
             .contextModule(ContextModule(this))
-            .onItemClickPersonModule(OnItemClickPersonModule(this))
+            .onPersonClickedModule(
+                OnPersonClickedModule(
+                    this
+                )
+            )
             .build()
 
-        mPersonsAdapter = personAdapterComponent.getPersonAdapter()
+        personAdapterComponent.inject(this)
     }
 
-    override fun onItemClicked(id: Int?) {
+    override fun onPersonClicked(id: Int?) {
         startActivity(Intent(this,PersonDetailsActivity::class.java)
                 .putExtra(Constants.PERSON_ID_PATH,id))
     }
@@ -108,5 +97,19 @@ class SearchPersonsActivity : BaseActivityWithViewModel<SearchPersonsViewModel ,
 
     override fun enableBackButton(): Boolean {
         return true
+    }
+
+    override fun afterTextChanged(s: Editable?) {
+        if (s!!.isNotEmpty()) {
+            mActivityViewModel?.doSearch(s.toString())
+        }
+    }
+
+    override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
+
+    }
+
+    override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
+
     }
 }

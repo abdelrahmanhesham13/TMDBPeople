@@ -4,10 +4,7 @@ import android.content.Context
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 
-import com.example.tmdbpeople.networkutils.LoadCallback
 import com.example.tmdbpeople.viewmodels.PersonDetailsViewModel
-import com.example.tmdbpeople.viewmodels.PopularPersonsViewModel
-import com.example.tmdbpeople.viewmodels.SearchPersonsViewModel
 
 //Factory class to create ViewModels each with its required parameters
 class CustomViewModelFactory(val context: Context) : ViewModelProvider.NewInstanceFactory() {
