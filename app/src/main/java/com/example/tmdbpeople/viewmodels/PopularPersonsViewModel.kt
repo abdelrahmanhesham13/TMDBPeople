@@ -24,7 +24,7 @@ class PopularPersonsViewModel(application: Application) : AndroidViewModel(appli
         personPagedList = LivePagedListBuilder(personDataSourceFactory, pagedListConfig).build()
     }
 
-    fun getStateLiveData() : LiveData<Int>? {
+    fun getStateLiveData() : LiveData<Constants.State>? {
         return personDataSourceFactory.getStateLiveData()
     }
 

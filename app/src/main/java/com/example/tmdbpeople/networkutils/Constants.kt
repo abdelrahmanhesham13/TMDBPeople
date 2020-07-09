@@ -22,7 +22,10 @@ object Constants {
     const val FIRST_PAGE = 1
     const val NETWORK_ERROR_MESSAGE = R.string.network_error
     const val SERVER_ERROR_MESSAGE = R.string.server_error
-    const val FIRST_LOAD_STATE = 1
-    const val LOAD_MORE_STATE = 2
-    const val SUCCESS_STATE = 3
+
+    enum class State {
+        FIRST_LOAD_STATE,
+        LOAD_MORE_STATE,
+        SUCCESS_STATE
+    }
 }

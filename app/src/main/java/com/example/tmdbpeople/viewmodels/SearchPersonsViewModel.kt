@@ -27,7 +27,7 @@ class SearchPersonsViewModel(application: Application) : AndroidViewModel(applic
             .build()
     }
 
-    fun getStateLiveData() : LiveData<Int>? {
+    fun getStateLiveData() : LiveData<Constants.State>? {
         return personDataSource.getStateLiveData()
     }
 

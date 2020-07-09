@@ -28,19 +28,19 @@ class PersonDetailsRepository(val context: Context) {
             .build()
         networkServiceComponent.inject(this)
     }
-    val loadStateLiveData : MutableLiveData<Int> = MutableLiveData()
+    val loadStateLiveData : MutableLiveData<Constants.State> = MutableLiveData()
     val errorStateLiveData : MutableLiveData<Int> = MutableLiveData()
     val compositeDisposable : CompositeDisposable = CompositeDisposable()
     //Function to call person details api and returns LiveData object to observe changes and get person details response
     fun getPersonDetails(personId: Int): LiveData<PersonModel?> {
         val personDetails = MutableLiveData<PersonModel?>()
         if (ConnectionUtils.isOnline(context)) {
-            loadStateLiveData.postValue(Constants.FIRST_LOAD_STATE)
-            compositeDisposable.add(service.personDetails(personId, Constants.API_KEY_VALUE)
+            loadStateLiveData.postValue(Constants.State.FIRST_LOAD_STATE)
+            compositeDisposable.add(service.personDetails(personId)
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribeOn(Schedulers.io())
                 .subscribe({
-                    loadStateLiveData.postValue(Constants.SUCCESS_STATE)
+                    loadStateLiveData.postValue(Constants.State.SUCCESS_STATE)
                     personDetails.value = it
                 },{
                     personDetails.value = null
@@ -56,15 +56,15 @@ class PersonDetailsRepository(val context: Context) {
     fun getPersonImages(personId: Int): LiveData<PersonImagesResponse?> {
         val personImages = MutableLiveData<PersonImagesResponse?>()
         if (ConnectionUtils.isOnline(context)) {
-            loadStateLiveData.postValue(Constants.FIRST_LOAD_STATE)
-            compositeDisposable.add(service.personImages(personId, Constants.API_KEY_VALUE)
+            loadStateLiveData.postValue(Constants.State.FIRST_LOAD_STATE)
+            compositeDisposable.add(service.personImages(personId)
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribeOn(Schedulers.io())
                 .subscribe({
 
                     (it.profiles as ArrayList<PersonImage>).add(0, PersonImage())
                     personImages.value = it
-                    loadStateLiveData.postValue(Constants.SUCCESS_STATE)
+                    loadStateLiveData.postValue(Constants.State.SUCCESS_STATE)
 
                 }, {
                     errorStateLiveData.postValue(Constants.SERVER_ERROR_MESSAGE)

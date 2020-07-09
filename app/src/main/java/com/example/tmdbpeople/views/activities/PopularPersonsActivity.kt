@@ -61,15 +61,15 @@ class PopularPersonsActivity : BaseActivityWithViewModel<PopularPersonsViewModel
             PrintUtils.printMessage(this,it)
         })
         mActivityViewModel?.getStateLiveData()?.observe(this, Observer {
-            when (it) {
-                Constants.SUCCESS_STATE -> {
+            when (it!!) {
+                Constants.State.SUCCESS_STATE -> {
                     progressBar.visibility = View.GONE
                     centerProgressBar.visibility = View.GONE
                 }
-                Constants.LOAD_MORE_STATE -> {
+                Constants.State.LOAD_MORE_STATE -> {
                     progressBar.visibility = View.VISIBLE
                 }
-                Constants.FIRST_LOAD_STATE -> {
+                Constants.State.FIRST_LOAD_STATE -> {
                     centerProgressBar.visibility = View.VISIBLE
                 }
             }

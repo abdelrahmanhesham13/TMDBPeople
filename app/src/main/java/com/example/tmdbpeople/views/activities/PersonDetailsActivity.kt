@@ -49,10 +49,10 @@ class PersonDetailsActivity : BaseActivityWithViewModel<PersonDetailsViewModel, 
         })
         mActivityViewModel?.loadStateLiveData?.observe(this , Observer {
             when (it) {
-                Constants.SUCCESS_STATE -> {
+                Constants.State.SUCCESS_STATE -> {
                     progressBar.visibility = View.GONE
                 }
-                Constants.FIRST_LOAD_STATE -> {
+                Constants.State.FIRST_LOAD_STATE -> {
                     progressBar.visibility = View.VISIBLE
                 }
             }

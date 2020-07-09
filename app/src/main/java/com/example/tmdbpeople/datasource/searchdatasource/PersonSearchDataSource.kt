@@ -14,7 +14,7 @@ import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.schedulers.Schedulers
 import javax.inject.Inject
 
-class PersonSearchDataSource(private val context: Context,private val query: String, private val loadingLiveData: MutableLiveData<Int>, private val errorLiveData: MutableLiveData<Int> , private val compositeDisposable: CompositeDisposable?) : PageKeyedDataSource<Int?, PersonModel?>() {
+class PersonSearchDataSource(private val context: Context,private val query: String, private val loadingLiveData: MutableLiveData<Constants.State>, private val errorLiveData: MutableLiveData<Int> , private val compositeDisposable: CompositeDisposable?) : PageKeyedDataSource<Int?, PersonModel?>() {
 
     @Inject
     lateinit var service : PersonsService
@@ -28,13 +28,13 @@ class PersonSearchDataSource(private val context: Context,private val query: Str
     //Function Loads the data for first time (page number 1)
     override fun loadInitial(params: LoadInitialParams<Int?>, callback: LoadInitialCallback<Int?, PersonModel?>) {
         if (ConnectionUtils.isOnline(context) && query.isNotEmpty()) {
-            loadingLiveData.postValue(Constants.FIRST_LOAD_STATE)
-            compositeDisposable?.add(service.listPopularPersonsForSearch(Constants.API_KEY_VALUE,Constants.FIRST_PAGE,query)
+            loadingLiveData.postValue(Constants.State.FIRST_LOAD_STATE)
+            compositeDisposable?.add(service.listPopularPersonsForSearch(Constants.FIRST_PAGE,query)
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribeOn(Schedulers.io())
                 .subscribe({
                     callback.onResult(it.people!!, null, Constants.FIRST_PAGE + 1)
-                    loadingLiveData.postValue(Constants.SUCCESS_STATE)
+                    loadingLiveData.postValue(Constants.State.SUCCESS_STATE)
                 },{
                     errorLiveData.postValue(Constants.SERVER_ERROR_MESSAGE)
                 }))
@@ -52,14 +52,14 @@ class PersonSearchDataSource(private val context: Context,private val query: Str
     //to increase it
     override fun loadAfter(params: LoadParams<Int?>, callback: LoadCallback<Int?, PersonModel?>) {
         if (ConnectionUtils.isOnline(context) && query.isNotEmpty()){
-            loadingLiveData.postValue(Constants.LOAD_MORE_STATE)
-            compositeDisposable?.add(service.listPopularPersonsForSearch(Constants.API_KEY_VALUE, params.key, query)
+            loadingLiveData.postValue(Constants.State.LOAD_MORE_STATE)
+            compositeDisposable?.add(service.listPopularPersonsForSearch(params.key, query)
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribeOn(Schedulers.io())
                 .subscribe({
                     val key = if (it.totalPages!! > params.key) params.key + 1 else null
                     callback.onResult(it.people!!, key)
-                    loadingLiveData.postValue(Constants.SUCCESS_STATE)
+                    loadingLiveData.postValue(Constants.State.SUCCESS_STATE)
                 },{
                     errorLiveData.postValue(Constants.SERVER_ERROR_MESSAGE)
                 }))

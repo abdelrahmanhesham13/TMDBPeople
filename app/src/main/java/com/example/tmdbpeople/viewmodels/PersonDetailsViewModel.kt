@@ -5,6 +5,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.ViewModel
 import com.example.tmdbpeople.models.PersonModel
 import com.example.tmdbpeople.models.responsemodels.PersonImagesResponse
+import com.example.tmdbpeople.networkutils.Constants
 import com.example.tmdbpeople.repositories.PersonDetailsRepository
 import io.reactivex.disposables.CompositeDisposable
 
@@ -13,7 +14,7 @@ class PersonDetailsViewModel(personId: Int, context: Context) : ViewModel() {
 
     var personDetailsLiveData: LiveData<PersonModel?>?
     var personImagesLiveData: LiveData<PersonImagesResponse?>?
-    var loadStateLiveData: LiveData<Int>?
+    var loadStateLiveData: LiveData<Constants.State>?
     var errorStateLiveData: LiveData<Int>?
     var compositeDisposable: CompositeDisposable?
 

@@ -6,12 +6,13 @@ import androidx.lifecycle.MutableLiveData
 import androidx.paging.DataSource
 import androidx.paging.PageKeyedDataSource
 import com.example.tmdbpeople.models.PersonModel
+import com.example.tmdbpeople.networkutils.Constants
 import io.reactivex.disposables.CompositeDisposable
 
 //DataSource Factory used to create Person DataSource object and post it to LiveData
 class PersonSearchDataSourceFactory (val context: Context,var query : String) : DataSource.Factory<Int?, PersonModel?>() {
 
-    private val loadingLiveData : MutableLiveData<Int> = MutableLiveData()
+    private val loadingLiveData : MutableLiveData<Constants.State> = MutableLiveData()
     private val errorLiveData : MutableLiveData<Int> = MutableLiveData()
     var personDataSource : PersonSearchDataSource? = null
     var compositeDisposable : CompositeDisposable? = CompositeDisposable()
@@ -23,7 +24,7 @@ class PersonSearchDataSourceFactory (val context: Context,var query : String) : 
         return personDataSource as PersonSearchDataSource
     }
 
-    fun getStateLiveData() : LiveData<Int>? {
+    fun getStateLiveData() : LiveData<Constants.State>? {
         return loadingLiveData
     }
 
