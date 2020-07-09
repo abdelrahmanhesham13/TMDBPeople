@@ -9,8 +9,8 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.GridLayoutManager.SpanSizeLookup
 import com.example.tmdbpeople.R
-import com.example.tmdbpeople.dagger.component.DaggerPersonDetailsAdapterComponent
-import com.example.tmdbpeople.dagger.component.PersonDetailsAdapterComponent
+import com.example.tmdbpeople.dagger.component.adapters.DaggerPersonDetailsAdapterComponent
+import com.example.tmdbpeople.dagger.component.adapters.PersonDetailsAdapterComponent
 import com.example.tmdbpeople.dagger.modules.ContextModule
 import com.example.tmdbpeople.dagger.modules.clickhandlers.OnImageClickedModule
 import com.example.tmdbpeople.databinding.ActivityPersonDetailsBinding
@@ -84,14 +84,10 @@ class PersonDetailsActivity : BaseActivityWithViewModel<PersonDetailsViewModel, 
     }
 
     private fun injectAdapter() {
-        val personDetailsAdapterComponent: PersonDetailsAdapterComponent =
-            DaggerPersonDetailsAdapterComponent.builder()
+        val personDetailsAdapterComponent: PersonDetailsAdapterComponent = DaggerPersonDetailsAdapterComponent.builder()
                 .contextModule(ContextModule(this))
                 .onImageClickedModule(
-                    OnImageClickedModule(
-                        this
-                    )
-                )
+                    OnImageClickedModule(this))
                 .build()
 
         personDetailsAdapterComponent.inject(this)

@@ -1,4 +1,4 @@
-package com.example.tmdbpeople.dagger.component
+package com.example.tmdbpeople.dagger.component.adapters
 
 import com.example.tmdbpeople.dagger.modules.*
 import com.example.tmdbpeople.dagger.modules.clickhandlers.OnImageClickedModule
@@ -9,7 +9,5 @@ import dagger.Component
 
 @Component(modules = [ContextModule::class, OnImageClickedModule::class , PersonImageArrayListModule::class , PersonDetailsModule::class])
 interface PersonDetailsAdapterComponent {
-
     fun inject(personDetailsActivity: PersonDetailsActivity)
-
 }

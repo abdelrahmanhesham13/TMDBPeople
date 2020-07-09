@@ -9,8 +9,8 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.tmdbpeople.R
-import com.example.tmdbpeople.dagger.component.DaggerPersonAdapterComponent
-import com.example.tmdbpeople.dagger.component.PersonAdapterComponent
+import com.example.tmdbpeople.dagger.component.adapters.DaggerPersonAdapterComponent
+import com.example.tmdbpeople.dagger.component.adapters.PersonAdapterComponent
 import com.example.tmdbpeople.dagger.modules.ContextModule
 import com.example.tmdbpeople.dagger.modules.clickhandlers.OnPersonClickedModule
 import com.example.tmdbpeople.databinding.ActivitySearchBinding

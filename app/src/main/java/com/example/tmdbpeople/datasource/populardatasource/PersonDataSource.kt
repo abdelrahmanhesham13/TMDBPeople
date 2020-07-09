@@ -3,8 +3,8 @@ package com.example.tmdbpeople.datasource.populardatasource
 import android.content.Context
 import androidx.lifecycle.MutableLiveData
 import androidx.paging.PageKeyedDataSource
-import com.example.tmdbpeople.dagger.component.DaggerNetworkServiceComponent
-import com.example.tmdbpeople.dagger.component.NetworkServiceComponent
+import com.example.tmdbpeople.dagger.component.network.DaggerNetworkServiceComponent
+import com.example.tmdbpeople.dagger.component.network.NetworkServiceComponent
 import com.example.tmdbpeople.models.PersonModel
 import com.example.tmdbpeople.networkutils.ConnectionUtils
 import com.example.tmdbpeople.networkutils.Constants

@@ -1,4 +1,4 @@
-package com.example.tmdbpeople.dagger.component
+package com.example.tmdbpeople.dagger.component.adapters
 
 import com.example.tmdbpeople.dagger.modules.ContextModule
 import com.example.tmdbpeople.dagger.modules.clickhandlers.OnPersonClickedModule

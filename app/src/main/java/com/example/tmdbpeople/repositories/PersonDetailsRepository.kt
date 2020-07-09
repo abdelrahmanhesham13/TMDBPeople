@@ -3,8 +3,8 @@ package com.example.tmdbpeople.repositories
 import android.content.Context
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
-import com.example.tmdbpeople.dagger.component.DaggerNetworkServiceComponent
-import com.example.tmdbpeople.dagger.component.NetworkServiceComponent
+import com.example.tmdbpeople.dagger.component.network.DaggerNetworkServiceComponent
+import com.example.tmdbpeople.dagger.component.network.NetworkServiceComponent
 import com.example.tmdbpeople.models.PersonImage
 import com.example.tmdbpeople.models.PersonModel
 import com.example.tmdbpeople.models.responsemodels.PersonImagesResponse
@@ -14,19 +14,23 @@ import com.example.tmdbpeople.networkutils.PersonsService
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.schedulers.Schedulers
-import retrofit2.Call
-import retrofit2.Callback
-import retrofit2.Response
 import javax.inject.Inject
 
-class PersonDetailsRepository(val context: Context) {
+class PersonDetailsRepository() {
+
+    private lateinit var context : Context
+
     @Inject
-    lateinit var service : PersonsService
+    constructor(context: Context) : this() {
+        this.context = context
+    }
+
+    var service : PersonsService
 
     init {
         val networkServiceComponent : NetworkServiceComponent = DaggerNetworkServiceComponent.builder()
             .build()
-        networkServiceComponent.inject(this)
+        service = networkServiceComponent.getService()
     }
     val loadStateLiveData : MutableLiveData<Constants.State> = MutableLiveData()
     val errorStateLiveData : MutableLiveData<Int> = MutableLiveData()
