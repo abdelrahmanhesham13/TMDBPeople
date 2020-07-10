@@ -13,7 +13,6 @@ import com.example.tmdbpeople.dagger.component.adapters.DaggerPersonAdapterCompo
 import com.example.tmdbpeople.dagger.component.adapters.PersonAdapterComponent
 import com.example.tmdbpeople.dagger.modules.ContextModule
 import com.example.tmdbpeople.dagger.modules.clickhandlers.OnPersonClickedModule
-import com.example.tmdbpeople.databinding.ActivitySearchBinding
 import com.example.tmdbpeople.utils.networkutils.Constants
 import com.example.tmdbpeople.utils.PrintUtils
 import com.example.tmdbpeople.viewmodels.SearchPersonsViewModel

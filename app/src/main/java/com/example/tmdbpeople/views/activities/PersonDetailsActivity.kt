@@ -13,7 +13,6 @@ import com.example.tmdbpeople.dagger.component.adapters.DaggerPersonDetailsAdapt
 import com.example.tmdbpeople.dagger.component.adapters.PersonDetailsAdapterComponent
 import com.example.tmdbpeople.dagger.modules.ContextModule
 import com.example.tmdbpeople.dagger.modules.clickhandlers.OnImageClickedModule
-import com.example.tmdbpeople.databinding.ActivityPersonDetailsBinding
 import com.example.tmdbpeople.models.PersonImage
 import com.example.tmdbpeople.utils.networkutils.Constants
 import com.example.tmdbpeople.viewmodels.PersonDetailsViewModel
@@ -39,31 +38,21 @@ class PersonDetailsActivity : BaseActivityWithViewModel<PersonDetailsViewModel>(
     }
 
     private fun observeImages() {
-        mActivityViewModel.personImagesLiveData?.observe(this , Observer {
+        mActivityViewModel.personImagesLiveData.observe(this , Observer {
+            progressBar.visibility = View.GONE
             mPersonDetailsAdapter.addImages(it?.profiles as ArrayList<PersonImage>)
         })
     }
 
     private fun observeDetails() {
-        mActivityViewModel.errorStateLiveData?.observe(this , Observer {
+        mActivityViewModel.errorStateLiveData.observe(this , Observer {
             progressBar.visibility = View.GONE
             Toast.makeText(this,it, Toast.LENGTH_LONG).show()
         })
-        mActivityViewModel.loadStateLiveData?.observe(this , Observer {
-            when (it) {
-                Constants.State.SUCCESS_STATE -> {
-                    progressBar.visibility = View.GONE
-                }
-                Constants.State.FIRST_LOAD_STATE -> {
-                    progressBar.visibility = View.VISIBLE
-                }
-            }
+        mActivityViewModel.personDetailsLiveData.observe(this, Observer { personModel ->
+            mPersonDetailsAdapter.setPersonDetailsResponse(personModel)
+            observeImages()
         })
-        mActivityViewModel.personDetailsLiveData?.observe(this, Observer { personModel ->
-                progressBar.visibility = View.GONE
-                mPersonDetailsAdapter.setPersonDetailsResponse(personModel)
-                observeImages()
-            })
     }
 
     private fun setupViews() {

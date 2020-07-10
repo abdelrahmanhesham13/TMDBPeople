@@ -13,7 +13,6 @@ import com.example.tmdbpeople.dagger.component.adapters.DaggerPersonAdapterCompo
 import com.example.tmdbpeople.dagger.component.adapters.PersonAdapterComponent
 import com.example.tmdbpeople.dagger.modules.ContextModule
 import com.example.tmdbpeople.dagger.modules.clickhandlers.OnPersonClickedModule
-import com.example.tmdbpeople.databinding.ActivityPopularPersonsBinding
 import com.example.tmdbpeople.utils.networkutils.Constants
 import com.example.tmdbpeople.utils.PrintUtils
 import com.example.tmdbpeople.viewmodels.PopularPersonsViewModel
@@ -93,7 +92,8 @@ class PopularPersonsActivity : BaseActivityWithViewModel<PopularPersonsViewModel
     }
 
     override fun onPersonClicked(id: Int?) {
-        startActivity(Intent(this,PersonDetailsActivity::class.java).putExtra(Constants.PERSON_ID_PATH,id))
+        startActivity(Intent(this,
+            PersonDetailsActivity::class.java).putExtra(Constants.PERSON_ID_PATH,id))
     }
 
     override fun getLayoutResourceId(): Int {

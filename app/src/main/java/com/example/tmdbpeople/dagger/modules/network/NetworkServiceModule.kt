@@ -1,5 +1,6 @@
 package com.example.tmdbpeople.dagger.modules.network
 
+import com.example.tmdbpeople.utils.networkutils.IdlingResources
 import com.example.tmdbpeople.utils.networkutils.Constants
 import com.example.tmdbpeople.service.PersonsService
 import dagger.Module
@@ -37,7 +38,7 @@ class NetworkServiceModule {
         val okHttpClient = OkHttpClient.Builder()
             .addInterceptor(requestInterceptor)
             .build()
-
+        IdlingResources.registerOkHttp(okHttpClient);
         return Retrofit.Builder()
             .baseUrl(Constants.BASE_URL)
             .client(okHttpClient)

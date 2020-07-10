@@ -17,7 +17,6 @@ class PersonDetailsViewModel(personId: Int, context: Context) : ViewModel() {
 
     var personDetailsLiveData: LiveData<PersonModel?>
     var personImagesLiveData: LiveData<PersonImagesResponse?>
-    var loadStateLiveData: LiveData<Constants.State>
     var errorStateLiveData: LiveData<Int>
     var compositeDisposable: CompositeDisposable?
 
@@ -33,7 +32,6 @@ class PersonDetailsViewModel(personId: Int, context: Context) : ViewModel() {
 
         personDetailsLiveData = personDetailsRepository.getPersonDetails(personId)
         personImagesLiveData = personDetailsRepository.getPersonImages(personId)
-        loadStateLiveData = personDetailsRepository.loadStateLiveData
         errorStateLiveData = personDetailsRepository.errorStateLiveData;
         compositeDisposable = personDetailsRepository.compositeDisposable
     }
