@@ -10,10 +10,9 @@ import androidx.lifecycle.ViewModel
 
 //BaseActivityWithViewModel is parent activity to open up button android handle its click on all Activities
 //and to initialise view model and data binding of all activities
-abstract class BaseActivityWithViewModel<V : ViewModel , D : ViewDataBinding> : AppCompatActivity() {
+abstract class BaseActivityWithViewModel<V : ViewModel> : AppCompatActivity() {
 
-    protected var mActivityBinding: D? = null
-    protected var mActivityViewModel: V? = null
+    protected lateinit var mActivityViewModel: V
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -21,7 +20,7 @@ abstract class BaseActivityWithViewModel<V : ViewModel , D : ViewDataBinding> : 
             supportActionBar?.setDisplayHomeAsUpEnabled(true)
             supportActionBar?.setHomeButtonEnabled(true)
         }
-        mActivityBinding = DataBindingUtil.setContentView(this,getLayoutResourceId())
+        setContentView(getLayoutResourceId())
         mActivityViewModel = initialiseViewModel()
     }
 

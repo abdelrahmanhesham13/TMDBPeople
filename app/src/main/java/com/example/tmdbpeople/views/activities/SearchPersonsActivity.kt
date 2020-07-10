@@ -20,9 +20,12 @@ import com.example.tmdbpeople.viewmodels.SearchPersonsViewModel
 import com.example.tmdbpeople.views.adapters.PersonAdapter
 import com.example.tmdbpeople.views.baseviews.BaseActivityWithViewModel
 import kotlinx.android.synthetic.main.activity_popular_persons.*
+import kotlinx.android.synthetic.main.activity_popular_persons.centerProgressBar
+import kotlinx.android.synthetic.main.activity_popular_persons.progressBar
+import kotlinx.android.synthetic.main.activity_search.*
 import javax.inject.Inject
 
-class SearchPersonsActivity : BaseActivityWithViewModel<SearchPersonsViewModel , ActivitySearchBinding>() , PersonAdapter.OnPersonClicked , TextWatcher {
+class SearchPersonsActivity : BaseActivityWithViewModel<SearchPersonsViewModel>() , PersonAdapter.OnPersonClicked , TextWatcher {
 
     @Inject
     lateinit var mPersonsAdapter : PersonAdapter
@@ -34,12 +37,12 @@ class SearchPersonsActivity : BaseActivityWithViewModel<SearchPersonsViewModel ,
     }
 
     private fun observeData() {
-        mActivityViewModel?.getErrorLiveData()?.observe(this, Observer {
+        mActivityViewModel.getErrorLiveData()?.observe(this, Observer {
             progressBar.visibility = View.GONE
             centerProgressBar.visibility = View.GONE
             PrintUtils.printMessage(this,it)
         })
-        mActivityViewModel?.getStateLiveData()?.observe(this, Observer {
+        mActivityViewModel.getStateLiveData()?.observe(this, Observer {
             when (it!!) {
                 Constants.State.SUCCESS_STATE -> {
                     progressBar.visibility = View.GONE
@@ -54,7 +57,7 @@ class SearchPersonsActivity : BaseActivityWithViewModel<SearchPersonsViewModel ,
             }
         })
 
-        mActivityViewModel?.personPagedList?.observe(this, Observer {
+        mActivityViewModel.personPagedList.observe(this, Observer {
             mPersonsAdapter.submitList(it)
         })
 
@@ -63,10 +66,10 @@ class SearchPersonsActivity : BaseActivityWithViewModel<SearchPersonsViewModel ,
     private fun setupViews() {
         title = getString(R.string.search_for_person)
         injectAdapter()
-        mActivityBinding?.searchResultsRecycler?.layoutManager = LinearLayoutManager(this)
-        mActivityBinding?.searchResultsRecycler?.adapter = mPersonsAdapter
+        search_results_recycler.layoutManager = LinearLayoutManager(this)
+        search_results_recycler.adapter = mPersonsAdapter
 
-        mActivityBinding?.searchEditText?.addTextChangedListener(this)
+        search_edit_text.addTextChangedListener(this)
     }
 
     private fun injectAdapter() {
@@ -101,7 +104,7 @@ class SearchPersonsActivity : BaseActivityWithViewModel<SearchPersonsViewModel ,
 
     override fun afterTextChanged(s: Editable?) {
         if (s!!.isNotEmpty()) {
-            mActivityViewModel?.doSearch(s.toString())
+            mActivityViewModel.doSearch(s.toString())
         }
     }
 

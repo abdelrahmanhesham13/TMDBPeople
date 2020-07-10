@@ -21,11 +21,13 @@ import com.example.tmdbpeople.viewmodels.viewmodelfactory.CustomViewModelFactory
 import com.example.tmdbpeople.views.viewutils.SpacesItemDecoration
 import com.example.tmdbpeople.views.adapters.PersonDetailsAdapter
 import com.example.tmdbpeople.views.baseviews.BaseActivityWithViewModel
+import kotlinx.android.synthetic.main.activity_person_details.*
 import kotlinx.android.synthetic.main.activity_popular_persons.*
+import kotlinx.android.synthetic.main.activity_popular_persons.progressBar
 import javax.inject.Inject
 
 
-class PersonDetailsActivity : BaseActivityWithViewModel<PersonDetailsViewModel, ActivityPersonDetailsBinding>() , PersonDetailsAdapter.OnImageClicked {
+class PersonDetailsActivity : BaseActivityWithViewModel<PersonDetailsViewModel>() , PersonDetailsAdapter.OnImageClicked {
 
     @Inject
     lateinit var mPersonDetailsAdapter: PersonDetailsAdapter
@@ -37,17 +39,17 @@ class PersonDetailsActivity : BaseActivityWithViewModel<PersonDetailsViewModel, 
     }
 
     private fun observeImages() {
-        mActivityViewModel?.personImagesLiveData?.observe(this , Observer {
+        mActivityViewModel.personImagesLiveData?.observe(this , Observer {
             mPersonDetailsAdapter.addImages(it?.profiles as ArrayList<PersonImage>)
         })
     }
 
     private fun observeDetails() {
-        mActivityViewModel?.errorStateLiveData?.observe(this , Observer {
+        mActivityViewModel.errorStateLiveData?.observe(this , Observer {
             progressBar.visibility = View.GONE
             Toast.makeText(this,it, Toast.LENGTH_LONG).show()
         })
-        mActivityViewModel?.loadStateLiveData?.observe(this , Observer {
+        mActivityViewModel.loadStateLiveData?.observe(this , Observer {
             when (it) {
                 Constants.State.SUCCESS_STATE -> {
                     progressBar.visibility = View.GONE
@@ -57,8 +59,8 @@ class PersonDetailsActivity : BaseActivityWithViewModel<PersonDetailsViewModel, 
                 }
             }
         })
-        mActivityViewModel?.personDetailsLiveData?.observe(this, Observer { personModel ->
-                mActivityBinding?.progressBar?.visibility = View.GONE
+        mActivityViewModel.personDetailsLiveData?.observe(this, Observer { personModel ->
+                progressBar.visibility = View.GONE
                 mPersonDetailsAdapter.setPersonDetailsResponse(personModel)
                 observeImages()
             })
@@ -78,9 +80,9 @@ class PersonDetailsActivity : BaseActivityWithViewModel<PersonDetailsViewModel, 
                 }
             }
         }
-        mActivityBinding?.detailsRecycler?.layoutManager = gridLayout
-        mActivityBinding?.detailsRecycler?.addItemDecoration(SpacesItemDecoration(5))
-        mActivityBinding?.detailsRecycler?.adapter = mPersonDetailsAdapter
+        details_recycler.layoutManager = gridLayout
+        details_recycler.addItemDecoration(SpacesItemDecoration(5))
+        details_recycler.adapter = mPersonDetailsAdapter
     }
 
     private fun injectAdapter() {

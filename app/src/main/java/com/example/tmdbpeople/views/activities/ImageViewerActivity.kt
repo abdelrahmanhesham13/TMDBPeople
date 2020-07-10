@@ -5,16 +5,16 @@ import android.view.Menu
 import android.view.MenuItem
 import androidx.lifecycle.ViewModelProvider
 import com.example.tmdbpeople.R
-import com.example.tmdbpeople.databinding.ActivityImageViewerBinding
 import com.example.tmdbpeople.viewmodels.ImageViewerViewModel
 import com.example.tmdbpeople.views.baseviews.BaseActivityWithViewModel
+import kotlinx.android.synthetic.main.activity_image_viewer.*
 
-class ImageViewerActivity : BaseActivityWithViewModel<ImageViewerViewModel , ActivityImageViewerBinding>() {
+class ImageViewerActivity : BaseActivityWithViewModel<ImageViewerViewModel>() {
     
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         title = getString(R.string.person_image)
-        mActivityViewModel?.loadImage(intent,mActivityBinding?.personImage)
+        mActivityViewModel.loadImage(intent,person_image)
     }
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
@@ -24,7 +24,7 @@ class ImageViewerActivity : BaseActivityWithViewModel<ImageViewerViewModel , Act
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         return if (item.itemId == R.id.download) {
-            mActivityViewModel?.checkPermission(this,intent)
+            mActivityViewModel.checkPermission(this,intent)
             true
         } else {
             super.onOptionsItemSelected(item)
@@ -32,7 +32,7 @@ class ImageViewerActivity : BaseActivityWithViewModel<ImageViewerViewModel , Act
     }
 
     override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<String>, grantResults: IntArray) {
-        mActivityViewModel?.onRequestPermissionsResult(requestCode,permissions,grantResults ,intent,this)
+        mActivityViewModel.onRequestPermissionsResult(requestCode,permissions,grantResults ,intent,this)
     }
 
     override fun getLayoutResourceId(): Int {

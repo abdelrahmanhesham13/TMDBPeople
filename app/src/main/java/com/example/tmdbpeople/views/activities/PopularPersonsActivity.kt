@@ -23,7 +23,7 @@ import kotlinx.android.synthetic.main.activity_popular_persons.*
 import javax.inject.Inject
 
 
-class PopularPersonsActivity : BaseActivityWithViewModel<PopularPersonsViewModel , ActivityPopularPersonsBinding>() , PersonAdapter.OnPersonClicked {
+class PopularPersonsActivity : BaseActivityWithViewModel<PopularPersonsViewModel>() , PersonAdapter.OnPersonClicked {
 
     @Inject
     lateinit var mPersonsAdapter: PersonAdapter
@@ -37,8 +37,8 @@ class PopularPersonsActivity : BaseActivityWithViewModel<PopularPersonsViewModel
     private fun setupViews() {
         title = getString(R.string.popular_people)
         injectAdapter()
-        mActivityBinding?.personsRecycler?.layoutManager = LinearLayoutManager(this)
-        mActivityBinding?.personsRecycler?.adapter = mPersonsAdapter
+        persons_recycler.layoutManager = LinearLayoutManager(this)
+        persons_recycler.adapter = mPersonsAdapter
     }
 
     private fun injectAdapter() {
@@ -51,12 +51,12 @@ class PopularPersonsActivity : BaseActivityWithViewModel<PopularPersonsViewModel
     }
 
     private fun observeData() {
-        mActivityViewModel?.getErrorLiveData()?.observe(this, Observer {
+        mActivityViewModel.getErrorLiveData()?.observe(this, Observer {
             progressBar.visibility = View.GONE
             centerProgressBar.visibility = View.GONE
             PrintUtils.printMessage(this,it)
         })
-        mActivityViewModel?.getStateLiveData()?.observe(this, Observer {
+        mActivityViewModel.getStateLiveData()?.observe(this, Observer {
             when (it!!) {
                 Constants.State.SUCCESS_STATE -> {
                     progressBar.visibility = View.GONE
@@ -70,7 +70,7 @@ class PopularPersonsActivity : BaseActivityWithViewModel<PopularPersonsViewModel
                 }
             }
         })
-        mActivityViewModel?.personPagedList?.observe(this, Observer {
+        mActivityViewModel.personPagedList.observe(this, Observer {
             mPersonsAdapter.submitList(it)
         })
     }
@@ -85,8 +85,8 @@ class PopularPersonsActivity : BaseActivityWithViewModel<PopularPersonsViewModel
             startActivity(Intent(this, SearchPersonsActivity::class.java))
             return true
         } else if (item.itemId == R.id.refresh) {
-            mActivityBinding?.centerProgressBar?.visibility = View.VISIBLE
-            mActivityViewModel?.invalidate()
+            centerProgressBar.visibility = View.VISIBLE
+            mActivityViewModel.invalidate()
             return true
         }
         return false

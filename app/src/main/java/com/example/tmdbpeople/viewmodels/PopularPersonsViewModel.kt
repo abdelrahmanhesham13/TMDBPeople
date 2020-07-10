@@ -6,7 +6,7 @@ import androidx.lifecycle.LiveData
 import androidx.paging.LivePagedListBuilder
 import androidx.paging.PageKeyedDataSource
 import androidx.paging.PagedList
-import com.example.tmdbpeople.dagger.component.DaggerDataSourceComponent
+import com.example.tmdbpeople.dagger.component.datasource.DaggerDataSourceComponent
 import com.example.tmdbpeople.dagger.modules.ContextModule
 import com.example.tmdbpeople.dagger.modules.data.QueryModule
 import com.example.tmdbpeople.datasource.populardatasource.PersonDataSourceFactory
