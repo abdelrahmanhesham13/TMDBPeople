@@ -1,7 +1,7 @@
 package com.example.tmdbpeople.dagger.modules.network
 
 import com.example.tmdbpeople.utils.networkutils.Constants
-import com.example.tmdbpeople.utils.networkutils.PersonsService
+import com.example.tmdbpeople.service.PersonsService
 import dagger.Module
 import dagger.Provides
 import okhttp3.Interceptor

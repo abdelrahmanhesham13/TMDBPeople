@@ -1,8 +1,9 @@
-package com.example.tmdbpeople.utils.networkutils
+package com.example.tmdbpeople.service
 
 import com.example.tmdbpeople.models.PersonModel
 import com.example.tmdbpeople.models.responsemodels.PersonImagesResponse
 import com.example.tmdbpeople.models.responsemodels.PopularPersonResponse
+import com.example.tmdbpeople.utils.networkutils.Constants
 import io.reactivex.Single
 import retrofit2.http.GET
 import retrofit2.http.Path
