@@ -13,23 +13,19 @@ interface PersonsService {
 
     //Call function for popular persons
     @GET(Constants.POPULAR_PATH)
-    fun listPopularPersons(@Query(Constants.API_KEYWORD) apiKey : String,
-                           @Query(Constants.PAGE_KEY) page : Int) : Single<PopularPersonResponse>
+    fun listPopularPersons(@Query(Constants.PAGE_KEY) page : Int) : Single<PopularPersonResponse>
 
     //Call function for search for person
     @GET(Constants.SEARCH_PATH)
-    fun listPopularPersonsForSearch(@Query(Constants.API_KEYWORD) apiKey : String,
-                                    @Query(Constants.QUERY_KEY) query : String?,
+    fun listPopularPersonsForSearch(@Query(Constants.QUERY_KEY) query : String?,
                                     @Query(Constants.PAGE_KEY) page : Int) : Single<PopularPersonResponse>
 
     //Call function for person details
     @GET(Constants.DETAILS_PATH)
-    fun personDetails(@Path(Constants.PERSON_ID_PATH) personId : Int,
-                      @Query(Constants.API_KEYWORD) apiKey : String) : Single<PersonModel>
+    fun personDetails(@Path(Constants.PERSON_ID_PATH) personId : Int) : Single<PersonModel>
 
 
     //Call function for person images
     @GET(Constants.IMAGES_PATH)
-    fun personImages(@Path(Constants.PERSON_ID_PATH) personId : Int,
-                     @Query(Constants.API_KEYWORD) apiKey : String) : Single<PersonImagesResponse>
+    fun personImages(@Path(Constants.PERSON_ID_PATH) personId : Int) : Single<PersonImagesResponse>
 }

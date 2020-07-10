@@ -29,7 +29,7 @@ class PersonSearchDataSource(private val context: Context,private val query: Str
     override fun loadInitial(params: LoadInitialParams<Int?>, callback: LoadInitialCallback<Int?, PersonModel?>) {
         if (ConnectionUtils.isOnline(context) && query.isNotEmpty()) {
             loadingLiveData.postValue(Constants.State.FIRST_LOAD_STATE)
-            compositeDisposable?.add(service.listPopularPersonsForSearch(Constants.API_KEY_VALUE,query,Constants.FIRST_PAGE)
+            compositeDisposable?.add(service.listPopularPersonsForSearch(query,Constants.FIRST_PAGE)
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribeOn(Schedulers.io())
                 .subscribe({
@@ -53,7 +53,7 @@ class PersonSearchDataSource(private val context: Context,private val query: Str
     override fun loadAfter(params: LoadParams<Int?>, callback: LoadCallback<Int?, PersonModel?>) {
         if (ConnectionUtils.isOnline(context) && query.isNotEmpty()){
             loadingLiveData.postValue(Constants.State.LOAD_MORE_STATE)
-            compositeDisposable?.add(service.listPopularPersonsForSearch(Constants.API_KEY_VALUE,query,params.key)
+            compositeDisposable?.add(service.listPopularPersonsForSearch(query,params.key)
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribeOn(Schedulers.io())
                 .subscribe({

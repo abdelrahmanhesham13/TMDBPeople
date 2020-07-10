@@ -30,7 +30,7 @@ class PersonDataSource(private val context: Context, private val loadingLiveData
     override fun loadInitial(params: LoadInitialParams<Int?>, callback: LoadInitialCallback<Int?, PersonModel?>) {
         if (ConnectionUtils.isOnline(context)) {
             loadingLiveData.postValue(Constants.State.FIRST_LOAD_STATE)
-            compositeDisposable?.add(service.listPopularPersons(Constants.API_KEY_VALUE,Constants.FIRST_PAGE)
+            compositeDisposable?.add(service.listPopularPersons(Constants.FIRST_PAGE)
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribeOn(Schedulers.io())
                 .subscribe({
@@ -54,7 +54,7 @@ class PersonDataSource(private val context: Context, private val loadingLiveData
     override fun loadAfter(params: LoadParams<Int?>, callback: LoadCallback<Int?, PersonModel?>) {
         if (ConnectionUtils.isOnline(context)) {
             loadingLiveData.postValue(Constants.State.LOAD_MORE_STATE)
-            compositeDisposable?.add(service.listPopularPersons(Constants.API_KEY_VALUE,params.key)
+            compositeDisposable?.add(service.listPopularPersons(params.key)
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribeOn(Schedulers.io())
                 .subscribe({
