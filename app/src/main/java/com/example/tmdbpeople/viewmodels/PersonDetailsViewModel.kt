@@ -15,10 +15,10 @@ import javax.inject.Inject
 //PersonDetailsViewModel to get user details and images LiveData from repository and pass it to Activity to observe
 class PersonDetailsViewModel(personId: Int, context: Context) : ViewModel() {
 
-    var personDetailsLiveData: LiveData<PersonModel?>?
-    var personImagesLiveData: LiveData<PersonImagesResponse?>?
-    var loadStateLiveData: LiveData<Constants.State>?
-    var errorStateLiveData: LiveData<Int>?
+    var personDetailsLiveData: LiveData<PersonModel?>
+    var personImagesLiveData: LiveData<PersonImagesResponse?>
+    var loadStateLiveData: LiveData<Constants.State>
+    var errorStateLiveData: LiveData<Int>
     var compositeDisposable: CompositeDisposable?
 
     @Inject

@@ -18,7 +18,7 @@ import com.squareup.picasso.Picasso
 
 class ImageViewerViewModel(application: Application) : AndroidViewModel(application) {
 
-    fun loadImage(intent : Intent, imageView : ImageView?) {
+    fun loadImage(intent : Intent, imageView : ImageView) {
         Picasso.get().load(Constants.IMAGE_BASE_URL_ORIGINAL + intent.getStringExtra(Constants.IMAGE_KEY))
             .placeholder(R.drawable.im_placeholder)
             .error(R.drawable.im_placeholder)
@@ -50,7 +50,7 @@ class ImageViewerViewModel(application: Application) : AndroidViewModel(applicat
                 if ((grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED)) {
                     ImageUtils.imageDownload(intent.getStringExtra(Constants.IMAGE_KEY),context)
                 } else {
-                    Toast.makeText(context,"Permission Denied", Toast.LENGTH_LONG).show()
+                    Toast.makeText(context,context.getString(R.string.permission_denied), Toast.LENGTH_LONG).show()
                 }
                 return
             }
