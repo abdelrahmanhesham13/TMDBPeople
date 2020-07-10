@@ -6,17 +6,26 @@ import androidx.lifecycle.LiveData
 import androidx.paging.LivePagedListBuilder
 import androidx.paging.PageKeyedDataSource
 import androidx.paging.PagedList
+import com.example.tmdbpeople.dagger.component.DaggerDataSourceComponent
+import com.example.tmdbpeople.dagger.modules.ContextModule
+import com.example.tmdbpeople.dagger.modules.data.QueryModule
 import com.example.tmdbpeople.datasource.populardatasource.PersonDataSourceFactory
 import com.example.tmdbpeople.models.PersonModel
 import com.example.tmdbpeople.utils.networkutils.Constants
+import javax.inject.Inject
 
 //PopularPersonsViewModel create DataSource Factory for Person List Pagination and create LiveData object to observe on it
 class PopularPersonsViewModel(application: Application) : AndroidViewModel(application) {
-    private var personDataSourceFactory : PersonDataSourceFactory = PersonDataSourceFactory(application)
+    @Inject
+    lateinit var personDataSourceFactory : PersonDataSourceFactory
     val personPagedList: LiveData<PagedList<PersonModel?>>
     private val liveDataSource: LiveData<PageKeyedDataSource<Int?, PersonModel?>>
 
     init {
+        DaggerDataSourceComponent.builder()
+            .contextModule(ContextModule(application))
+            .build()
+            .inject(this)
         liveDataSource = personDataSourceFactory.itemLiveDataSource
         val pagedListConfig = PagedList.Config.Builder()
             .setEnablePlaceholders(false)

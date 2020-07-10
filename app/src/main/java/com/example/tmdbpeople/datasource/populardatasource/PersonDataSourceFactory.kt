@@ -8,9 +8,11 @@ import androidx.paging.PageKeyedDataSource
 import com.example.tmdbpeople.models.PersonModel
 import com.example.tmdbpeople.utils.networkutils.Constants
 import io.reactivex.disposables.CompositeDisposable
+import javax.inject.Inject
 
 //DataSource Factory used to create Person DataSource object and post it to LiveData
-class PersonDataSourceFactory(val context: Context) : DataSource.Factory<Int?, PersonModel?>() {
+class PersonDataSourceFactory @Inject constructor(val context: Context) : DataSource.Factory<Int?, PersonModel?>() {
+
     private val loadingLiveData : MutableLiveData<Constants.State> = MutableLiveData()
     private val errorLiveData : MutableLiveData<Int> = MutableLiveData()
     private var personDataSource : PersonDataSource? = null
