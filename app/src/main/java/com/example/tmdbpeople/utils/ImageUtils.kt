@@ -4,7 +4,9 @@ import android.content.Context
 import android.graphics.Bitmap
 import android.graphics.drawable.Drawable
 import android.os.Environment
+import android.widget.ImageView
 import android.widget.Toast
+import androidx.databinding.BindingAdapter
 import com.example.tmdbpeople.R
 import com.example.tmdbpeople.utils.networkutils.ConnectionUtils
 import com.example.tmdbpeople.utils.networkutils.Constants
@@ -16,7 +18,7 @@ import java.io.FileOutputStream
 import java.io.IOException
 
 //Helper class to download image from url and save it on device storage using Picasso third-party library
-object DownloadImageUtils {
+object ImageUtils {
     fun imageDownload(url: String? , ctx : Context) {
         if (ConnectionUtils.isOnline(ctx)) {
             Picasso.get()
@@ -55,5 +57,18 @@ object DownloadImageUtils {
 
             override fun onPrepareLoad(placeHolderDrawable: Drawable) {}
         }
+    }
+
+    fun loadImage(url : String? , imageView: ImageView) {
+        Picasso.get().load(url)
+            .placeholder(R.drawable.im_placeholder)
+            .error(R.drawable.im_placeholder)
+            .into(imageView)
+    }
+
+    @JvmStatic
+    @BindingAdapter("bind:imageUrl")
+    fun loadImage(view: ImageView, imageUrl: String?) {
+        loadImage(imageUrl , view)
     }
 }

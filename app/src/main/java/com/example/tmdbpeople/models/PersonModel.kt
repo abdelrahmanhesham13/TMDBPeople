@@ -1,10 +1,15 @@
 package com.example.tmdbpeople.models
 
+import android.widget.ImageView
+import androidx.databinding.BindingAdapter
 import com.example.tmdbpeople.R
+import com.example.tmdbpeople.utils.ImageUtils
 import com.example.tmdbpeople.utils.networkutils.Constants
 import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
+import com.squareup.picasso.Picasso
 import javax.inject.Inject
+
 
 class PersonModel @Inject constructor() {
 

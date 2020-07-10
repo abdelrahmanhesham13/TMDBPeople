@@ -1,5 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
-<layout>
+<layout xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <data>
+        <variable
+            name="image"
+            type="com.example.tmdbpeople.models.PersonImage" />
+    </data>
 
     <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
         android:layout_width="100dp"
@@ -9,6 +15,7 @@
         <ImageView
             android:id="@+id/person_image"
             android:layout_width="match_parent"
+            app:imageUrl="@{image.imageFullPath}"
             android:layout_height="match_parent"
             android:scaleType="centerCrop" />
 

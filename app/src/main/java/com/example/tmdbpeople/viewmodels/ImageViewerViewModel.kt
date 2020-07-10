@@ -13,7 +13,7 @@ import androidx.core.content.ContextCompat
 import androidx.lifecycle.AndroidViewModel
 import com.example.tmdbpeople.R
 import com.example.tmdbpeople.utils.networkutils.Constants
-import com.example.tmdbpeople.utils.DownloadImageUtils
+import com.example.tmdbpeople.utils.ImageUtils
 import com.squareup.picasso.Picasso
 
 class ImageViewerViewModel(application: Application) : AndroidViewModel(application) {
@@ -34,7 +34,7 @@ class ImageViewerViewModel(application: Application) : AndroidViewModel(applicat
                 PERMISSIONS_REQUEST_WRITE_EXTERNAL_STORAGE
             )
         } else {
-            DownloadImageUtils.imageDownload(intent.getStringExtra(Constants.IMAGE_KEY),activity)
+            ImageUtils.imageDownload(intent.getStringExtra(Constants.IMAGE_KEY),activity)
         }
     }
 
@@ -48,7 +48,7 @@ class ImageViewerViewModel(application: Application) : AndroidViewModel(applicat
             PERMISSIONS_REQUEST_WRITE_EXTERNAL_STORAGE -> {
                 // If request is cancelled, the result arrays are empty.
                 if ((grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED)) {
-                    DownloadImageUtils.imageDownload(intent.getStringExtra(Constants.IMAGE_KEY),context)
+                    ImageUtils.imageDownload(intent.getStringExtra(Constants.IMAGE_KEY),context)
                 } else {
                     Toast.makeText(context,"Permission Denied", Toast.LENGTH_LONG).show()
                 }

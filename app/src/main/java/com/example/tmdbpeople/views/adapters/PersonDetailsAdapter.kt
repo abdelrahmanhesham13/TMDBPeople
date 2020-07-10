@@ -12,6 +12,7 @@ import com.example.tmdbpeople.databinding.PersonDetailsItemBinding
 import com.example.tmdbpeople.databinding.PersonImageItemBinding
 import com.example.tmdbpeople.models.PersonImage
 import com.example.tmdbpeople.models.PersonModel
+import com.example.tmdbpeople.utils.ImageUtils
 import com.squareup.picasso.Picasso
 import javax.inject.Inject
 
@@ -64,16 +65,9 @@ class PersonDetailsAdapter() : RecyclerView.Adapter<ViewHolder>() {
         if (getItemViewType(position) == DETAILS_VIEW_TYPE) {
             val detailsViewHolder = holder as PersonDetailsViewHolder
             detailsViewHolder.binding.person = personModel
-            Picasso.get().load(personModel?.getImageFullPath())
-                .placeholder(R.drawable.im_placeholder)
-                .error(R.drawable.im_placeholder)
-                .into(detailsViewHolder.binding.personImage)
         } else {
             val imageViewHolder = holder as PersonImageViewHolder
-            Picasso.get().load(personImages[position].getImageFullPath())
-                .placeholder(R.drawable.im_placeholder)
-                .error(R.drawable.im_placeholder)
-                .into(imageViewHolder.binding.personImage)
+            imageViewHolder.binding.image = personImages[position]
         }
     }
 

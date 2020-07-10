@@ -18,6 +18,7 @@
             android:layout_height="100dp"
             android:scaleType="centerCrop"
             android:layout_marginStart="16dp"
+            app:imageUrl="@{person.imageFullPath}"
             android:layout_marginTop="16dp"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />

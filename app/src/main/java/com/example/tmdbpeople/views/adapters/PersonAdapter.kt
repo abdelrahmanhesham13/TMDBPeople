@@ -11,6 +11,7 @@ import androidx.recyclerview.widget.RecyclerView.ViewHolder
 import com.example.tmdbpeople.R
 import com.example.tmdbpeople.databinding.PersonItemBinding
 import com.example.tmdbpeople.models.PersonModel
+import com.example.tmdbpeople.utils.ImageUtils
 import com.example.tmdbpeople.views.adapters.PersonAdapter.PersonViewHolder
 import com.squareup.picasso.Picasso
 import javax.inject.Inject
@@ -40,11 +41,6 @@ class PersonAdapter() : PagedListAdapter<PersonModel, PersonViewHolder>(DIFF_CAL
     override fun onBindViewHolder(holder: PersonViewHolder, position: Int) {
         val person = getItem(position)
         holder.personItemBinding.person = person
-        Picasso.get().load(person?.getImageFullPath())
-            .placeholder(R.drawable.im_placeholder)
-            .error(R.drawable.im_placeholder)
-            .into(holder.personItemBinding.personImage)
-
     }
 
     inner class PersonViewHolder(var personItemBinding: PersonItemBinding) :
