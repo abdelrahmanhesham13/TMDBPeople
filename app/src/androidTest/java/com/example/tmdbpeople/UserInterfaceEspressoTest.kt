@@ -21,14 +21,13 @@ import org.junit.runner.RunWith
 
 
 @RunWith(AndroidJUnit4::class)
-class PopularPersonsActivityEspressoTest {
+class UserInterfaceEspressoTest {
 
     @get:Rule
     var activityRule: ActivityTestRule<PopularPersonsActivity> = ActivityTestRule(PopularPersonsActivity::class.java)
 
     @get:Rule
-    var permissionRule =
-        GrantPermissionRule.grant(Manifest.permission.WRITE_EXTERNAL_STORAGE)
+    var permissionRule: GrantPermissionRule = GrantPermissionRule.grant(Manifest.permission.WRITE_EXTERNAL_STORAGE)
 
 
     @Test
