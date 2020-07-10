@@ -40,7 +40,7 @@ class PersonDetailsRepository() {
         val personDetails = MutableLiveData<PersonModel?>()
         if (ConnectionUtils.isOnline(context)) {
             loadStateLiveData.postValue(Constants.State.FIRST_LOAD_STATE)
-            compositeDisposable.add(service.personDetails(personId)
+            compositeDisposable.add(service.personDetails(personId,Constants.API_KEY_VALUE)
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribeOn(Schedulers.io())
                 .subscribe({
@@ -61,7 +61,7 @@ class PersonDetailsRepository() {
         val personImages = MutableLiveData<PersonImagesResponse?>()
         if (ConnectionUtils.isOnline(context)) {
             loadStateLiveData.postValue(Constants.State.FIRST_LOAD_STATE)
-            compositeDisposable.add(service.personImages(personId)
+            compositeDisposable.add(service.personImages(personId,Constants.API_KEY_VALUE)
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribeOn(Schedulers.io())
                 .subscribe({
